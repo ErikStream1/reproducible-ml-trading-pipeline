@@ -96,7 +96,6 @@ This enables:
 
   * `VectorLike`
   * `TargetLike`
-  * Explicit domain types (e.g. `pd.Series` where appropriate)
 * Metadata handled with `dataclasses` (`ModelInfo`, `LedgerResult`)
 * Unit and integration testing with `pytest`
 * Smoke tests to validate the full pipeline

@@ -1,9 +1,8 @@
 from __future__ import annotations
-from typing import TypeAlias, Sequence, Any
+from typing import TypeAlias, Sequence
 from dataclasses import dataclass
 from enum import Enum
-import numpy as np
-import pandas as pd
+from src.types import SeriesLike, IntArray
 
 class OrderSide(str, Enum):
     BUY = "buy"
@@ -17,6 +16,6 @@ class Fill:
     price: float
     fee: float
     
-PositionLike: TypeAlias = Sequence[int] | np.ndarray | pd.Series
+PositionLike: TypeAlias = IntArray | SeriesLike
 FillVectorLike: TypeAlias = Sequence[Fill]
 

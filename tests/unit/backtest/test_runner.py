@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 from src.backtest import run_ledger
-
-from typing import Any
+from src.types import ConfigLike
 import pandas as pd
 
 def test_runner():
-    cfg: dict[str, Any] = {
+    cfg: ConfigLike = {
         "execution":{
             "fill_mode": "next_close",
             "qty": 1.0,

@@ -1,14 +1,13 @@
 from __future__ import annotations
-from typing import Any
 
 import pandas as pd
 import numpy as np
-
+from src.types import ConfigLike
 from src.backtest import run_ledger, LedgerResult
 from src.execution import Fill, OrderSide
 
 def test_run_ledger():
-    cfg: dict[str, Any] = {
+    cfg: ConfigLike = {
         "backtest":{
             "initial_cash": 100_000,
             "execute_on": "next_bar",
@@ -41,6 +40,5 @@ def test_run_ledger():
                         index = index,
                         fills = fills)
     
-    print(output)
     assert isinstance(output, LedgerResult)
     

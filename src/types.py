@@ -6,6 +6,8 @@ import numpy as np
 import pandas as pd
 from numpy.typing import NDArray
 
+IntArray: TypeAlias = Sequence[int]
+
 FloatArray: TypeAlias = NDArray[np.floating]
 VectorArray: TypeAlias = NDArray[np.floating]
 MatrixArray: TypeAlias = NDArray[np.floating]

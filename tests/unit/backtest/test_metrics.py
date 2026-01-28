@@ -3,6 +3,7 @@ from __future__ import annotations
 import pandas as pd
 import numpy as np
 import pytest
+from src.types import VectorLike
 
 from src.backtest import (
     returns_from_equity,
@@ -33,7 +34,7 @@ def test_max_drawdown():
                           (np.random.rand(10),365),
                           (np.random.rand(10),-10)])
 
-def test_sharpe_ratio(data_ret,periods):
+def test_sharpe_ratio(data_ret:VectorLike,periods:int):
     ret = pd.Series(data_ret)
     
     if periods < 0:
@@ -44,9 +45,10 @@ def test_sharpe_ratio(data_ret,periods):
         assert isinstance(result, float)
 
 @pytest.mark.parametrize("data_pos",
-                         [[0,0,0,0,0],
-                          np.random.rand(5)])  
-def test_turnover_from_position(data_pos):
+                         [[1,0,1,1,0],
+                          [0,0,0,0,0],
+                          [1,1,1,1,1]])  
+def test_turnover_from_position(data_pos:VectorLike):
     position_qty = pd.Series(data_pos)
     
     result = turnover_from_position(position_qty=position_qty)
