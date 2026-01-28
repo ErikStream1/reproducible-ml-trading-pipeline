@@ -1,0 +1,29 @@
+features:
+  base_column: "Close"
+  date_column: "Date"
+  
+  returns:
+    pct_change:
+      enabled: true
+      periods: [1]
+      name_prefix: "Return"
+    
+    log_diff:
+      enabled: true
+      name: "LogReturn"
+
+    moving_average:
+      enabled: true
+      windows: [7, 14, 21, 50]
+      name_prefix: "MA"
+    
+    volatility:
+      enabled: true
+      windows: [7,14,30]
+      on: "Return_1"
+      name_prefix: "Volatility"
+
+    momentum:
+      enabled: true
+      lags: [3, 5, 10, 14, 30]
+      name_prefix: "Momentum"

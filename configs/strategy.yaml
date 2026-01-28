@@ -1,0 +1,10 @@
+strategy:
+    type: "threshold"
+    side_mode: "long_only"    #long only | long short
+    enter_threshold: 0.002
+    exit_threshold: 0.0
+    cooldown_bars: 3
+    
+    volatility_filter:
+        enabled: true
+        max_vol: 0.05

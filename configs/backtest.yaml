@@ -1,0 +1,4 @@
+backtest:
+    initial_cash: 100000
+    execute_on: "next_bar"
+    periods_per_year: 365

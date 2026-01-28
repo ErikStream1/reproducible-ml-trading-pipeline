@@ -1,0 +1,29 @@
+training:
+  random_seed: 42
+
+  split:
+    method: "walk_forward_splits"
+    train_size: 250
+    test_size: 50
+    step: 50
+      
+  model_run:
+    active_model: "xgboost"
+
+  artifacts:
+    model_output_dir: "artifacts/models/"
+    model_filenames: 
+      linear: "linear_model.joblib"
+      xgboost: "xgboost_model.joblib"
+  
+  evaluation:
+    primary_metric: "rmse"
+
+    secondary_metrics:
+      - "mae"
+      - "directional_accuracy"
+
+    direction:
+      rmse: "min"
+      mae: "min"
+      directional_accuracy : "max"

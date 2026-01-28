@@ -1,0 +1,15 @@
+models:
+  xgboost:
+    type: "xgboost"
+    params:
+      n_estimators: 300
+      max_depth: 4
+      learning_rate: 0.05
+      subsample: 0.9
+      colsample_bytree: 0.9
+      random_state: 42
+      
+  linear:
+    type: "linear_regression"
+    params:
+      alpha: 1
