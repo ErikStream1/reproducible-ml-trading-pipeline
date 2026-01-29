@@ -3,7 +3,7 @@ from typing import Any
 
 import numpy as np
 from pathlib import Path
-from src.types import PathLike
+from src.types import PathLike, ConfigLike
 from src.pipelines import run_inference_pipeline
 from src.models import LinearModel, XGBoostModel
 
@@ -15,7 +15,7 @@ def test_inference_pipeline_smoke(cur_model:str,
                                   tmp_path:PathLike,
                                   ):
     tmp_path = Path(str(tmp_path))
-    cfg: dict[str, Any] = {
+    cfg: ConfigLike = {
         "data" : {
             "paths":{
                "raw_path": tmp_path / "btc_usd.csv",
