@@ -6,7 +6,8 @@ import logging
 import time
 
 @contextmanager
-def log_step(logger: logging.Logger, step: str)->Iterator[None]:
+def log_step(logger: logging.Logger, step: str, level:int = logging.INFO)->Iterator[None]:
+    
     start = time.perf_counter()
     logger.info("Running %s", step)
     
@@ -18,5 +19,24 @@ def log_step(logger: logging.Logger, step: str)->Iterator[None]:
     
     else:
         elapsed = time.perf_counter() - start
-        logger.info("Done %s (%.2fs)", step, elapsed)
-        
+        logger.log(level, "Done %s (%.2fs)", step, elapsed)
+
+def log_drop(
+    logger:logging.Logger, 
+    name: str,
+    before: int,
+    after: int,
+    level: int = logging.INFO
+    )->None:
+    
+    dropped = before - after
+    if dropped > 0:
+        logger.log(
+                   level, 
+                   "%s dropped: before = %d after = %d dropped = %d", 
+                    name, before, after, dropped
+                    )
+    else:
+        level = logging.DEBUG
+        logger.log(level, "No rows were dropped.")
+    
