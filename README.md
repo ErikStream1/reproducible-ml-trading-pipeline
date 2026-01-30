@@ -134,9 +134,9 @@ This is an **ongoing project**, actively being extended and refined. Planned and
 ### Engineering & MLOps
 * [x] Config-driven execution (YAML-based configs)
 * [x] Reproducible pipelines
-* [in progress] Step-level logging for training and inference pipelines
-* [ ] Centralized logging infrastructure and error-handling policy
-* [ ] Reproducible experiments and artifacts
+* [x] Step-level logging for training and inference pipelines
+* [x] Centralized logging infrastructure and error-handling policy
+* [in progress] Reproducible experiments and artifacts
 * [ ] Real-time simulation
 * [ ] Live broker integration (Bitso / API)
 ---
