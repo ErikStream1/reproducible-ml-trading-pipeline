@@ -17,14 +17,13 @@ def test_run_ledger():
 
     data_close = np.random.rand(10)
     
-    
     timestamps = pd.date_range(start = "2024-01-01", periods = 10)
     close = pd.Series(data_close, index = timestamps)
     index = close.index
-    
     fills = []
     
     for i in range(10):
+
         fills.append(
             Fill(
                 timestamp=timestamps[i],
@@ -34,11 +33,11 @@ def test_run_ledger():
                 fee = np.random.rand()
             )
         )
-        
+    position_check = pd.Series(np.zeros(10, dtype = float))  
     output = run_ledger(cfg = cfg,
                         close = close,
                         index = index,
                         fills = fills)
     
     assert isinstance(output, LedgerResult)
-    
+    assert not output.position_qty.equals(position_check)
