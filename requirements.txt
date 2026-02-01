@@ -6,4 +6,4 @@ joblib
 pytest
 pyyaml
 yfinance
-
+pyarrow
