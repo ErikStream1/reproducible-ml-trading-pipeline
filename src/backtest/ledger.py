@@ -2,20 +2,13 @@ from __future__ import annotations
 
 import logging
 import pandas as pd
-from dataclasses import dataclass
 
-from src.types import ConfigLike, IndexLike, VectorLike, SeriesLike, FrameLike
+from src.backtest import LedgerResult
+from src.types import ConfigLike, IndexLike, VectorLike, SeriesLike
 from src.execution import OrderSide, FillVectorLike
 
 logger = logging.getLogger(__name__)
 
-@dataclass
-class LedgerResult:
-    equity: SeriesLike
-    cash: SeriesLike
-    position_qty: SeriesLike
-    trades: FrameLike #fills as dataframe
-    
 def run_ledger(
     cfg: ConfigLike,
     close: VectorLike,
@@ -23,7 +16,7 @@ def run_ledger(
     fills: FillVectorLike,
 )->LedgerResult:
     
-    if not isinstance(close, pd.Series):
+    if not isinstance(close, SeriesLike):
         close = pd.Series(close)
     
     initial_cash: float = cfg["backtest"].get("initial_cash",100_000)

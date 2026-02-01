@@ -1,24 +1,16 @@
 from __future__ import annotations
 
-import pandas as pd
-from dataclasses import dataclass
-from typing import Any
+from src.types import ConfigLike, SeriesLike, FrameLike, Prediction
 
 from src.strategy import threshold_signal
 from src.execution import simulate_fills_from_target_position
-from src.backtest import run_ledger, LedgerResult, metrics
+from src.backtest import run_ledger, BacktestReport, metrics
 
-@dataclass
-class BacktestReport:
-    ledger: LedgerResult
-    ret: pd.Series
-    summary: dict
-    
 def run_backtest_threshold(
-    pred_return: pd.Series,
-    market: pd.DataFrame, #at least close and bid/ask or mid.
-    cfg: dict[str, Any],
-    volatility: pd.Series|None = None,
+    cfg: ConfigLike,
+    pred_return: Prediction,
+    market: FrameLike, #at least close and bid/ask or mid.
+    volatility: SeriesLike|None = None,
 )->BacktestReport:
     
     target_pos = threshold_signal(pred_return=pred_return, cfg=cfg,volatility=volatility)
