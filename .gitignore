@@ -1,8 +1,15 @@
 notebooks/*.ipynb
 
 # Data
-data/
 *.csv
+*.parquet
+*.feather
+*.pickle
+*.h5
+*.hdf5
+*.jsonl
+*.gz
+*.zip
 
 # Models
 *.pkl
