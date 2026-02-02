@@ -1,12 +1,13 @@
+from __future__ import annotations
 import pytest
-
 import numpy as np
 from pathlib import Path
+
 from src.types import PathLike, ConfigLike
 from src.pipelines import run_inference_pipeline
 from src.models import LinearModel, XGBoostModel
 
-from tests.utils.fake_data import make_fake_ohlcv
+from src.utils.fake_data import make_fake_ohlcv
 
 @pytest.mark.parametrize("cur_model",["linear_v1","xgboost_v1"])
 
