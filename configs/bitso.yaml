@@ -1,0 +1,3 @@
+client:
+  base_url : "https://api.bitso.com/v3"
+  timeout_s : 10.0

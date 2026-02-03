@@ -1,0 +1,11 @@
+quotes:
+  provider: bitso
+  book: btc_usd
+  mode: ticker_rest
+  poll_interval_s: 2.0
+  flush_every_n: 200
+  out_dir: data/quotes
+  timezone: UTC
+
+logging:
+  level: INFO
