@@ -136,8 +136,8 @@ This is an **ongoing project**, actively being extended and refined. Planned and
 * [x] Reproducible pipelines
 * [x] Step-level logging for training and inference pipelines
 * [x] Centralized logging infrastructure and error-handling policy
-* [in progress] Bitso market data (bid/ask): client + quote collector + storage
-* [ ] Backtest pipeline
+* [x] Bitso market data (bid/ask): client + quote collector + storage
+* [in progress] Backtest pipeline
 * [ ] Reproducible experiments and artifacts
 * [ ] Real-time simulation
 * [ ] Live broker integration (Bitso / API)
