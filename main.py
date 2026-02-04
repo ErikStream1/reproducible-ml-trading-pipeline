@@ -1,11 +1,14 @@
 
 import logging
 from src.config import load_config
-from src.pipelines.data_pipeline import run_data_pipeline
-from src.pipelines.training_pipeline import run_training_pipeline
-from src.pipelines.inference_pipeline import run_inference_pipeline
-from src.pipelines.validation_pipeline import run_model_validation_pipeline
+from src.pipelines import (run_data_pipeline,
+                           run_training_pipeline,
+                           run_inference_pipeline,
+                           run_model_validation_pipeline,
+                           run_collect_quotes_pipeline)
 from src.utils.logger import setup_logging
+
+
 
 def main():
     setup_logging(logging.DEBUG)
@@ -18,12 +21,15 @@ def main():
         "configs/inference.yaml",
         "configs/strategy.yaml",
         "configs/execution.yaml",
-        "configs/backtest.yaml"
+        "configs/backtest.yaml",
+        "configs/bitso.yaml",
+        "configs/quotes.yaml"
     )
     
     #run_data_pipeline(cfg)
     #run_model_validation(cfg)
     #run_training_pipeline(cfg)
-    run_inference_pipeline(cfg)
+    #run_inference_pipeline(cfg)
+    run_collect_quotes_pipeline(cfg=cfg)
 if __name__ == "__main__":
     main()
