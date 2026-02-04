@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 from typing import Any
+
+from sklearn import base
 from src.data.types import BitsoConfig, BitsoError
 from datetime import datetime, timezone
 from decimal import Decimal
 from src.models.types import paramsLike, payloadLike
-from src.types import PathLike
+from src.types import PathLike, ConfigLike
 import requests
 from tenacity import (retry,
                       wait_exponential,
@@ -22,8 +24,12 @@ def _parse_dt_utc(dt_str:str)->datetime:
     return dt.astimezone(timezone.utc)
 
 class BitsoClient:
-    def __init__(self, cfg: BitsoConfig|None = None):
-        self.cfg = cfg or BitsoConfig()
+    def __init__(self, cfg: ConfigLike):
+        self.obj = BitsoConfig(
+            base_url = cfg["base_url"],
+            timeout_s = cfg["timeout_s"]
+        ) if cfg else BitsoConfig()
+        
         self._session = requests.Session()
         
     @retry(
@@ -33,8 +39,8 @@ class BitsoClient:
         reraise = True
     )
     def _get(self, path: PathLike, params: paramsLike = None,)->dict[str, Any]:
-        url = f"{self.cfg.base_url}{path}"
-        r = self._session.get(url, params = params, timeout=self.cfg.timeout_s)
+        url = f"{self.obj.base_url}{path}"
+        r = self._session.get(url, params = params, timeout=self.obj.timeout_s)
         r.raise_for_status
         data = r.json()
         if not data.get("success", False):
