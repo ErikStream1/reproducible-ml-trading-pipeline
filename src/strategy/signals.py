@@ -1,6 +1,5 @@
 from __future__ import annotations
-from src.types import VectorLike
-from src.types import ConfigLike, Prediction
+from src.types import VectorLike,SeriesLike, ConfigLike, Prediction
 import pandas as pd
 
 import src.strategy as strat
@@ -9,7 +8,7 @@ def threshold_signal(
     cfg: ConfigLike,
     pred_return: Prediction,
     volatility: VectorLike | None = None,
-)->pd.Series:
+)->SeriesLike:
     
     strategy_cfg = cfg["strategy"]
     
