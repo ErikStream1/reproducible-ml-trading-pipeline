@@ -31,3 +31,7 @@ class CollectQuotesConfig:
     flush_every_n: int
     out_dir: PathLike
     
+@dataclass
+class QuotesInfo:
+    book : str
+    quotes_dir : str
