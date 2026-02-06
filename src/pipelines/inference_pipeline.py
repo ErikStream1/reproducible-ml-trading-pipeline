@@ -2,7 +2,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from src.types import Prediction, ConfigLike, PathLike
-from src.utils.logging_utils import log_step, log_drop
+from src.utils import log_step, log_drop
 
 from src.models import LinearModel, XGBoostModel
 from src.pipelines import run_data_pipeline, run_feature_pipeline
