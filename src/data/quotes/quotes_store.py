@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 from pathlib import Path
-from src.data.types import QuoteSnapshot
+from src.data import QuoteSnapshot
 
 from src.types import PathLike
 import pandas as pd
@@ -40,6 +40,7 @@ class QuoteStore:
                     "book": r.book,
                     "ask": float(r.ask),
                     "bid": float(r.bid),
+                    "mid": (r.ask+r.bid)/2,
                     "source": r.source, 
             })
         
