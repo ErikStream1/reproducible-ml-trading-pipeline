@@ -1,6 +1,7 @@
 data:
-  paths:
-    source: "csv"
+  source: "csv"
+  
+  paths:  
     raw_path: "data/raw/btc_usd.csv"
     processed_path: "data/processed/processed_btc_usd.csv"
     features_path: "data/processed/with_features_btc_usd.csv"

@@ -1,6 +1,6 @@
 execution:
     fill_mode: "next_close"
-    qty: 1.0
+    qty: 0.001
 
     fees:
       rate: 0.001
