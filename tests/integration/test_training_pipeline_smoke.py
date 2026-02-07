@@ -84,11 +84,6 @@ def test_training_pipeline_smoke(tmp_path:PathLike,
                     }
                     
             },
-            "direction": {
-                "rmse": "min",
-                "mae": "min",
-                "directional_accuracy": "max",
-            }
         },
         "models":{
             "xgboost_v1":{

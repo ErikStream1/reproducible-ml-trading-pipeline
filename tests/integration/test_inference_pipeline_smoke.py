@@ -87,11 +87,6 @@ def test_inference_pipeline_smoke(cur_model:str,
                     }
                     
             },
-            "direction": {
-                "rmse": "min",
-                "mae": "min",
-                "directional_accuracy": "max",
-            }
         },
         "models":{
             "xgboost_v1":{
