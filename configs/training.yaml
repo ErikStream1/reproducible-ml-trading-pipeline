@@ -22,8 +22,3 @@ training:
     secondary_metrics:
       - "mae"
       - "directional_accuracy"
-
-    direction:
-      rmse: "min"
-      mae: "min"
-      directional_accuracy : "max"
