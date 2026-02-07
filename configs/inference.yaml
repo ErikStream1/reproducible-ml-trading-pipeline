@@ -1,6 +1,3 @@
 inference:
   artifacts:
     model_path: "artifacts/models/xgboost_model.joblib"
-
-  run_time:
-    fail_on_missing_columns: true
