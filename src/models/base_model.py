@@ -33,7 +33,7 @@ class BaseModel(ABC):
         Persist the trained model and its metadata to disk.
         """
         if self.info is None:
-            raise ValueError(f"There is no info to save in the model {self.info}.")
+            raise ValueError("Model info is None; cannot save metadata")
         
         if path is None:
             raise ValueError("Save path not found.")
@@ -46,7 +46,7 @@ class BaseModel(ABC):
             "info" : asdict(self.info)
         }
         
-        joblib.dump(payload, path)
+        joblib.dump(payload, save_path)
     
     @classmethod
     def load(cls, path: PathLike) -> Self:
