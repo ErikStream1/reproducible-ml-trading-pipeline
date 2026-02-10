@@ -1,5 +1,5 @@
 from __future__ import annotations
-from src.types import VectorLike
+
 def slippage_bps(price: float, bps: float)-> float:
     """bps = basis points. 10bps => 0.10%"""
     return price * (bps / 10_000.0)
