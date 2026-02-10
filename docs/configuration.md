@@ -33,7 +33,7 @@ data:
     update:
         enabled: true
 ```
-
+---
 ### `bitso.yaml`
 **Purpose:** Bitso REST client configuration.
 
@@ -41,7 +41,7 @@ Key fields:
 
 * `bitso.base_url`: Bitso API base URL
 * `bitso.timeout_s`: HTTP timeout (seconds)
-
+---
 ### `quotes.yaml`
 **Purpose:** Quote collection settings.
 
@@ -55,7 +55,7 @@ quotes:
     out_dir: "data/quotes"
     timezone: "UTC"
 ```
-
+---
 ### `features.yaml`
 **Purpose:** feature engineering configuration (which features to compute and their parameters)
 
@@ -91,7 +91,7 @@ features:
             lags: [3]
             name_prefix: "Momentum"
 ```
-
+---
 ### `models.yaml`
 **Purpose:** model selection and its configuration (parameters and type of model)
 
@@ -104,7 +104,7 @@ models:
         params:
             alpha: 1.0
 ```
-
+---
 ### `training.yaml`
 **Purpose:** training configuration(seed, split method, train and test sizes, step, model_run, models_outputs_paths)
 
@@ -135,14 +135,14 @@ training:
         - "mae"
         - "directional_accuracy"
 ```
-
+---
 ### `inference.yaml`
 **Purpose:** inference configuration(model path)
 
 Key fields:
 
 * `inference.artifacts.model_path`: Model path
-
+---
 ### `strategy.yaml`
 
 **Purpose:** signal generation and risk rules (threshold, cooldown, volatility filter and sizing).
@@ -166,7 +166,7 @@ strategy:
         max_notional: 3000.0
 
 ```
-
+---
 ### `execution.yaml`
 **Purpose:** execution assumptions (fill pricing model + transaction cost model).
 
@@ -183,7 +183,7 @@ execution:
         bps: 5
         vol_k: 0.0
 ```
-
+---
 ### `backtest.yaml`
 **Purpose:** backtest settings (initial capital, execution price source, and annualization parameters).
 
