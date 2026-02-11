@@ -2,7 +2,7 @@ from __future__ import annotations
 from src.types import VectorLike,SeriesLike, ConfigLike, Prediction
 import pandas as pd
 
-import src.strategy as strat
+from src.strategy import (apply_vol_filter, apply_cooldown)
 
 def threshold_signal(
     cfg: ConfigLike,
@@ -50,8 +50,8 @@ def threshold_signal(
         desired = pd.Series(0, index = pred_return_index)
         desired.loc[pred_return > enter_threshold] = 1
         desired.loc[pred_return < -enter_threshold] = -1
-        
-    desired = strat.apply_vol_filter(desired_position=desired, volatility=volatility, vol_max=max_vol)
-    desired = strat.apply_cooldown(target_position=desired, cooldown_bars=cooldown_bars)
-
+    
+    desired = apply_vol_filter(desired_position=desired, volatility=volatility, vol_max=max_vol)
+    desired = apply_cooldown(target_position=desired, cooldown_bars=cooldown_bars)
+    
     return desired
