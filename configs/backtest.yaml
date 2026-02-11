@@ -1,4 +1,9 @@
 backtest:
     initial_cash: 100000
-    execute_on: "mid"
     periods_per_year: 15768000 # 2s bars
+    artifacts: 
+        output_dir: "artifacts/backtest",
+        summary_filename: "summary.json",
+        equity_filename: "equity.csv",
+        trades_filename: "trades.csv",
+    
