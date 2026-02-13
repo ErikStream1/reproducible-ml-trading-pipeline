@@ -175,6 +175,14 @@ cfg = load_config(
 run_training_pipeline(cfg)
 
 ```
+## CI
+
+This repository now includes **GitHub Actions** workflows for continuous integration and delivery:
+
+- **CI** (`.github/workflows/ci.yml`)
+  - Runs on every push and pull request
+  - Tests against Python **3.11** and **3.12**
+  - Executes unit tests and integration smoke tests
 
 ---
 
