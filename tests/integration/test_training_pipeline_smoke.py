@@ -10,15 +10,14 @@ from src.utils.fake_data import make_fake_ohlcv
 
 @pytest.mark.parametrize("cur_model",["linear_v1","xgboost_v1"])
 
-def test_training_pipeline_smoke(tmp_path:PathLike, 
+def test_training_pipeline_smoke(tmp_path:Path, 
                                  cur_model:str):
-    tmp_path = Path(str(tmp_path))
     cfg = {
         "data" : {
             "paths":{
-               "raw_path": tmp_path / "btc_usd.csv", 
-               "processed_path": tmp_path / "processed_btc_usd.csv",
-               "joblib_path": tmp_path / "artifacts/models/linear_model.joblib",
+               "raw_path": str(tmp_path / "btc_usd.csv"), 
+               "processed_path":str(tmp_path / "processed_btc_usd.csv"),
+               "joblib_path": str(tmp_path / "artifacts/models/linear_model.joblib"),
             },
             "schema": {
               "datetime_column": "Date",
@@ -70,11 +69,16 @@ def test_training_pipeline_smoke(tmp_path:PathLike,
                 "active_model": cur_model,
             },
             "artifacts":{
-                "model_output_dir": tmp_path / "artifacts/models/",
+                "model_output_dir": str(tmp_path / "artifacts/models/"),
                 "model_filenames": {
                     "linear_ridge": "linear_model.joblib", 
                     "xgboost":"xgboost_model.joblib",
-                    }, 
+                    },
+                 
+            },
+            "experiments": {
+                "enabled": True,
+                "output_dir": str(tmp_path / "artifacts/experiments"),
             },
             "evaluation":{
                 "primary_metric": "rmse",
@@ -82,7 +86,6 @@ def test_training_pipeline_smoke(tmp_path:PathLike,
                     "mae": "mae",
                     "directional_accuracy": "directional_accuracy",
                     }
-                    
             },
         },
         "models":{
@@ -116,3 +119,8 @@ def test_training_pipeline_smoke(tmp_path:PathLike,
     
     assert model is not None
     assert result_path.exists() == True
+    exp_root = tmp_path / "artifacts/experiments"
+    run_dirs = [p for p in exp_root.iterdir() if p.is_dir()]
+    assert len(run_dirs) == 1
+    assert (run_dirs[0] / "metadata.json").exists()
+    assert (run_dirs[0] / "metrics.json").exists()
