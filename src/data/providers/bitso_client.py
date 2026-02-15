@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from typing import Any
 
+from pathlib import Path
 from src.data import BitsoConfig, BitsoError
 from datetime import datetime, timezone
 from decimal import Decimal
 from src.models import paramsLike, payloadLike
-from src.types import PathLike, ConfigLike
+from src.types import ConfigLike
 import requests
 from tenacity import (retry,
                       wait_exponential,
@@ -37,7 +38,7 @@ class BitsoClient:
         retry = retry_if_exception_type((requests.RequestException, BitsoError)),
         reraise = True
     )
-    def _get(self, path: PathLike, params: paramsLike = None,)->dict[str, Any]:
+    def _get(self, path: Path, params: paramsLike = None,)->dict[str, Any]:
         url = f"{self.obj.base_url}{path}"
         r = self._session.get(url, params = params, timeout=self.obj.timeout_s)
         r.raise_for_status
@@ -48,11 +49,11 @@ class BitsoClient:
         return data
     
     def list_available_books(self)->list[dict[str,Any]]:
-        data = self._get("/available_books/")
+        data = self._get(Path("/available_books/"))
         return data["payload"]
     
     def get_ticker(self, book:str)->payloadLike:
-        data = self._get("/ticker/", params = {"book":book})
+        data = self._get(Path("/ticker/"), params = {"book":book})
         return data["payload"]
     
     def get_best_bid_ask_from_ticker(self, book: str)->tuple[datetime, Decimal, Decimal]:

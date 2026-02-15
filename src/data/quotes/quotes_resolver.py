@@ -4,10 +4,10 @@ from pathlib import Path
 import pandas as pd
 
 from src.data import QuoteSeries
-from src.types import PathLike
 
-def load_quotes(out_dir:PathLike, book:str)->QuoteSeries:
-    base = Path(str(out_dir)) / f"book={book}"
+
+def load_quotes(out_dir:Path, book:str)->QuoteSeries:
+    base = out_dir / f"book={book}"
     if not base.exists():
         raise FileNotFoundError(f"No quotes found for book={book} at {base}")
     

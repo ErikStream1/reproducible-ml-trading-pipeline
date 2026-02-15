@@ -3,7 +3,7 @@ import pytest
 import numpy as np
 from pathlib import Path
 
-from src.types import PathLike, ConfigLike
+from src.types import ConfigLike
 from src.pipelines import run_inference_pipeline
 from src.models import LinearModel, XGBoostModel
 
@@ -12,9 +12,8 @@ from src.utils.fake_data import make_fake_ohlcv
 @pytest.mark.parametrize("cur_model",["linear_v1","xgboost_v1"])
 
 def test_inference_pipeline_smoke(cur_model:str,
-                                  tmp_path:PathLike,
+                                  tmp_path:Path,
                                   ):
-    tmp_path = Path(str(tmp_path))
     cfg: ConfigLike = {
         "data" : {
             "paths":{

@@ -1,7 +1,8 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
-from src.types import FrameLike, PathLike
+from src.types import FrameLike
+from pathlib import Path
 
 @dataclass(frozen = True)
 class BitsoConfig:
@@ -29,7 +30,7 @@ class CollectQuotesConfig:
     mode: str
     poll_interval_s: float
     flush_every_n: int
-    out_dir: PathLike
+    out_dir: Path
     
 @dataclass
 class QuotesInfo:

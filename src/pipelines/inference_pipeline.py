@@ -1,7 +1,7 @@
 from __future__ import annotations
 from pathlib import Path
 
-from src.types import Prediction, ConfigLike, PathLike
+from src.types import Prediction, ConfigLike
 from src.utils import log_step, log_drop
 
 from src.models import LinearModel, XGBoostModel
@@ -10,17 +10,17 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def _load_model(model_path: PathLike) ->LinearModel|XGBoostModel:
+def _load_model(model_path: Path) ->LinearModel|XGBoostModel:
     """
     Loads a trained model artifact.
     """ 
     
-    model_path = str(model_path)
+    model_path_str = str(model_path)
     
-    if "linear" in model_path:
+    if "linear" in model_path_str:
         return LinearModel.load(model_path) 
 
-    elif "xgboost" in model_path:
+    elif "xgboost" in model_path_str:
         return XGBoostModel.load(model_path)
     
     else:
@@ -28,7 +28,7 @@ def _load_model(model_path: PathLike) ->LinearModel|XGBoostModel:
 
 def run_inference_pipeline(
     cfg: ConfigLike,
-    model_path: PathLike = None
+    model_path: Path|None = None
 ) -> Prediction:
     """
     End-to-end inference:

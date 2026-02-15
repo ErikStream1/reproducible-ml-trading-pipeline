@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 import time
-
+from pathlib import Path
 from src.data import (BitsoClient,
                       QuoteSnapshot,
                       QuoteStore,
@@ -57,7 +57,7 @@ def collect_quotes(cfg: ConfigLike):
         out_dir=out_dir
         )
     
-    store = QuoteStore(out_dir = quotes_cfg["out_dir"] or "data/quotes")
+    store = QuoteStore(out_dir = quotes_cfg["out_dir"] or Path("data/quotes"))
     client = BitsoClient(cfg = client_cfg)
     
     if quotes_cfg["mode"] == "ticker_rest":

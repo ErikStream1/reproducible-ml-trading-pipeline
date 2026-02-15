@@ -22,5 +22,5 @@ YLike: TypeAlias =  VectorLike
 Prediction: TypeAlias =  VectorLike
 
 ConfigLike: TypeAlias = dict[str, Any]
-PathLike: TypeAlias = Path | str | None
+
 

@@ -4,7 +4,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 from src.data import QuoteSnapshot
 
-from src.types import PathLike
 import pandas as pd
 
 def to_utc(dt: datetime)->datetime:
@@ -15,10 +14,10 @@ def to_utc(dt: datetime)->datetime:
 class QuoteStore:
     """Store snapshots in parquet files"""
     
-    def __init__(self, out_dir: PathLike)->None:
-        self.out_dir = Path(str(out_dir))
+    def __init__(self, out_dir: Path)->None:
+        self.out_dir = out_dir
         
-    def write_chunk(self, rows: list[QuoteSnapshot])->PathLike:
+    def write_chunk(self, rows: list[QuoteSnapshot])->Path:
         if not rows:
             raise ValueError("No rows to write")
         

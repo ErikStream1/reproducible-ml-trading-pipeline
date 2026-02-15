@@ -1,7 +1,7 @@
 from __future__ import annotations
 from pathlib import Path
 from src.models import ModelLike
-from src.types import ConfigLike, PathLike
+from src.types import ConfigLike
 
 from src.utils import log_step, start_experiment_run, save_experiment_artifacts
 from src.evaluation import rmse, mae, directional_accuracy
@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 def run_training_pipeline(
     cfg : ConfigLike
-)->tuple[PathLike, ModelLike]:
+)->tuple[Path, ModelLike]:
     
     target = cfg["data"]["schema"].get("target_column", "LogReturn")
     

@@ -9,19 +9,19 @@ import pandas as pd
 from src.backtest import (BacktestReport, run_backtest_threshold)
 from src.models import (LinearModel, XGBoostModel)
 from src.pipelines import (run_data_pipeline, run_feature_pipeline)
-from src.types import ConfigLike, PathLike
+from src.types import ConfigLike
 from src.utils import log_step
 
 logger = logging.getLogger(__name__)
 
 
-def _load_model(model_path: PathLike) -> LinearModel | XGBoostModel:
+def _load_model(model_path: Path) -> LinearModel | XGBoostModel:
     model_path_str = str(model_path)
 
     if "linear" in model_path_str:
-        return LinearModel.load(model_path_str)
+        return LinearModel.load(model_path)
     if "xgboost" in model_path_str:
-        return XGBoostModel.load(model_path_str)
+        return XGBoostModel.load(model_path)
 
     raise ValueError(f"Model not found for path: {model_path_str}")
 
@@ -55,7 +55,7 @@ def _save_backtest_artifacts(cfg: ConfigLike, report: BacktestReport) -> None:
 
 def run_backtest_pipeline(
     cfg: ConfigLike,
-    model_path: PathLike = None,
+    model_path: Path | None = None,
 ) -> BacktestReport:
     
     with log_step(logger, "Data pipeline"):

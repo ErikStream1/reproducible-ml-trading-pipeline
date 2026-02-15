@@ -4,7 +4,6 @@ import pytest
 
 from pathlib import Path
 from src.pipelines import run_training_pipeline
-from src.types import PathLike
 
 from src.utils.fake_data import make_fake_ohlcv
 
@@ -16,7 +15,7 @@ def test_training_pipeline_smoke(tmp_path:Path,
         "data" : {
             "paths":{
                "raw_path": str(tmp_path / "btc_usd.csv"), 
-               "processed_path":str(tmp_path / "processed_btc_usd.csv"),
+               "processed_path": str(tmp_path / "processed_btc_usd.csv"),
                "joblib_path": str(tmp_path / "artifacts/models/linear_model.joblib"),
             },
             "schema": {

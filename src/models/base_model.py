@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from typing import Self
-from src.types import XLike, YLike, Prediction, PathLike
+from src.types import XLike, YLike, Prediction
 from src.models import infoLike, payloadLike
 from pathlib import Path
 from abc import ABC, abstractmethod
@@ -28,7 +28,7 @@ class BaseModel(ABC):
     def predict(self, X:XLike)->Prediction:
         ...
     
-    def save(self, path: PathLike) -> None:
+    def save(self, path: Path) -> None:
         """
         Persist the trained model and its metadata to disk.
         """
@@ -49,7 +49,7 @@ class BaseModel(ABC):
         joblib.dump(payload, save_path)
     
     @classmethod
-    def load(cls, path: PathLike) -> Self:
+    def load(cls, path: Path) -> Self:
         """
         Load a previously saved model from disk.
         """

@@ -6,7 +6,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from src.types import ConfigLike, PathLike, FrameLike
+from src.types import ConfigLike, FrameLike
 
 @dataclass(frozen = True)
 class ExperimentRun:
