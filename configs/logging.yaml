@@ -1,0 +1,4 @@
+logging:
+  level: "DEBUG"
+  file: "logs/pipeline.log"
+  overwrite: false
