@@ -21,6 +21,10 @@ __pycache__/
 *.pyo
 *.pyd
 
+# Logs
+logs/
+*.log
+
 # Pytest cache
 .pytest_cache/
 
