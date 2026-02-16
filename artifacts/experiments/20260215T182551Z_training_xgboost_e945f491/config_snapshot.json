@@ -1,0 +1,172 @@
+{
+  "data": {
+    "source": "csv",
+    "paths": {
+      "raw_path": "data/raw/btc_usd.csv",
+      "processed_path": "data/processed/processed_btc_usd.csv",
+      "features_path": "data/processed/with_features_btc_usd.csv",
+      "joblib_path": "artifacts/models/linear_model.joblib",
+      "predictions_path": "artifacts/predictions/btc_predictions.csv"
+    },
+    "schema": {
+      "target_column": "LogReturn",
+      "drop_columns": "-\"Date\" -\"Return_1\""
+    },
+    "update": {
+      "enabled": true
+    }
+  },
+  "features": {
+    "base_column": "Close",
+    "date_column": "Date",
+    "returns": {
+      "pct_change": {
+        "enabled": true,
+        "periods": [
+          1
+        ],
+        "name_prefix": "Return"
+      },
+      "log_diff": {
+        "enabled": true,
+        "name": "LogReturn"
+      },
+      "moving_average": {
+        "enabled": true,
+        "windows": [
+          7,
+          14,
+          21,
+          50
+        ],
+        "name_prefix": "MA"
+      },
+      "volatility": {
+        "enabled": true,
+        "windows": [
+          7,
+          14,
+          30
+        ],
+        "true": "Return_1",
+        "name_prefix": "Volatility"
+      },
+      "momentum": {
+        "enabled": true,
+        "lags": [
+          3,
+          5,
+          10,
+          14,
+          30
+        ],
+        "name_prefix": "Momentum"
+      }
+    }
+  },
+  "training": {
+    "random_seed": 42,
+    "split": {
+      "method": "walk_forward_splits",
+      "train_size": 250,
+      "test_size": 50,
+      "step": 50
+    },
+    "model_run": {
+      "active_model": "xgboost"
+    },
+    "artifacts": {
+      "model_output_dir": "artifacts/models/",
+      "model_filenames": {
+        "linear": "linear_model.joblib",
+        "xgboost": "xgboost_model.joblib"
+      }
+    },
+    "experiments": {
+      "enabled": true,
+      "output_dir": "artifacts/experiments"
+    },
+    "evaluation": {
+      "primary_metric": "rmse",
+      "secondary_metrics": [
+        "mae",
+        "directional_accuracy"
+      ]
+    }
+  },
+  "models": {
+    "xgboost": {
+      "type": "xgboost",
+      "params": {
+        "n_estimators": 300,
+        "max_depth": 4,
+        "learning_rate": 0.05,
+        "subsample": 0.9,
+        "colsample_bytree": 0.9,
+        "random_state": 42
+      }
+    },
+    "linear": {
+      "type": "linear_regression",
+      "params": {
+        "alpha": 1
+      }
+    }
+  },
+  "inference": {
+    "artifacts": {
+      "model_path": "artifacts/models/xgboost_model.joblib"
+    }
+  },
+  "strategy": {
+    "type": "threshold",
+    "side_mode": "long_only",
+    "enter_threshold": 0.002,
+    "exit_threshold": 0.0,
+    "cooldown_bars": 3,
+    "volatility_column": "Volatility_7",
+    "volatility_filter": {
+      "enabled": true,
+      "max_vol": 0.05
+    },
+    "sizing": {
+      "target_notional": 1000.0,
+      "min_qty": 0.0001,
+      "max_notional": 3000.0
+    }
+  },
+  "execution": {
+    "fill_mode": "next_close",
+    "qty": 0.001,
+    "fees": {
+      "rate": 0.001
+    },
+    "slippage": {
+      "bps": 5,
+      "vol_k": 0.0
+    }
+  },
+  "backtest": {
+    "initial_cash": 100000,
+    "periods_per_year": 15768000,
+    "artifacts": {
+      "output_dir": "artifacts/backtest",
+      "summary_filename": "summary.json",
+      "equity_filename": "equity.csv",
+      "trades_filename": "trades.csv"
+    }
+  },
+  "client": {
+    "base_url": "https://api.bitso.com/v3",
+    "timeout_s": 10.0
+  },
+  "quotes": {
+    "provider": "bitso",
+    "book": "btc_usd",
+    "mode": "ticker_rest",
+    "poll_interval_s": 2.0,
+    "flush_every_n": 200,
+    "out_dir": "data/quotes",
+    "timezone": "UTC"
+  }
+}

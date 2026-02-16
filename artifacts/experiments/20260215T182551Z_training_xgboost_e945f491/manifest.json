@@ -1,0 +1,24 @@
+{
+  "model_artifact_path": "artifacts\\models\\xgboost_model.joblib",
+  "n_rows": 4015,
+  "n_features": 17,
+  "columns": [
+    "Open",
+    "High",
+    "Low",
+    "Close",
+    "Volume",
+    "MA_7",
+    "MA_14",
+    "MA_21",
+    "MA_50",
+    "Volatility_7",
+    "Volatility_14",
+    "Volatility_30",
+    "Momentum_3",
+    "Momentum_5",
+    "Momentum_10",
+    "Momentum_14",
+    "Momentum_30"
+  ]
+}
