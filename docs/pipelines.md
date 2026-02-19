@@ -220,3 +220,33 @@ Without changing the structure of other docs, these are the key consistency note
 1.  `docs/pipelines.md` was referenced in `docs/index.md` but previously empty.
 2.  In `main.py`, a comment shows `run_model_validation(cfg)`, while the actual exported function is `run_model_validation_pipeline(cfg)`.
 3.  Inference docs must include the explicit guard that blocks writing to `data/processed` through `processed_path`.
+
+## 8) Real-time simulation step
+
+**Function**: `run_realtime_simulation_step(cfg, model_path=None)`
+
+**File**: `src/pipelines/realtime_simulation_pipeline.py`
+
+### Flow
+
+1. Loads collected quotes from `quotes.out_dir` for `quotes.book`.
+2. Validates minimum history (`realtime_simulation.min_history_rows`).
+3. Converts quotes into a market frame (`Date`, `Close`, `bid`, `ask`).
+4. Builds features and drops `NaN` rows.
+5. Loads model from `model_path` or `inference.artifacts.model_path`.
+6. Predicts returns and applies strategy rules (`threshold_signal`) to compute target position.
+7. Returns latest step output (`predicted_return`, `target_position`, `action`).
+8. Optionally stores artifacts (`last_step.json`, `steps_history.csv`) when configured.
+
+### Key config inputs
+
+- `quotes.out_dir`
+- `quotes.book`
+- `realtime_simulation.min_history_rows`
+- `realtime_simulation.artifacts.*`
+- `inference.artifacts.model_path`
+- `strategy.*`
+
+### Outputs
+
+- `RealtimeSimulationStepResult` dataclass

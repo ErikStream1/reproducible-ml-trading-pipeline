@@ -147,6 +147,19 @@ Key fields:
 
 * `inference.artifacts.model_path`: Model path
 ---
+### `realtime_simulation.yaml`
+**Purpose:** one-step simulation from collected live-ish quotes.
+
+Minimal example:
+```yaml
+realtime_simulation:
+  min_history_rows: 50
+  artifacts:
+    output_dir: "artifacts/realtime_simulation"
+    step_filename: "last_step.json"
+    history_filename: "steps_history.csv"
+```
+---
 ### `strategy.yaml`
 
 **Purpose:** signal generation and risk rules (threshold, cooldown, volatility filter and sizing).

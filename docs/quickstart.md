@@ -24,6 +24,7 @@ Typical files:
     * `models.yaml`    
     * `training.yaml`
     * `inference.yaml`
+    * `realtime_simulation.yaml`
 * Strategy & backtest:
     * `strategy.yaml`
     * `execution.yaml`
