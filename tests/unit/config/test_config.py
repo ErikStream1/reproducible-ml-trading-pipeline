@@ -1,8 +1,8 @@
 from pathlib import Path
 
 import pytest
-
-from src.config import deep_merge, load_config, load_yaml
+from src.utils import deep_merge
+from src.config import load_config, load_yaml
 
 
 def test_load_yaml_raises_for_missing_file(tmp_path: Path) -> None:
