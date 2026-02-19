@@ -143,9 +143,22 @@ This is an **ongoing project**, actively being extended and refined. Planned and
 * [x] Bitso market data (bid/ask): client + quote collector + storage
 * [x] Backtest pipeline
 * [x] Reproducible experiments and artifacts
-* [in progress] Real-time simulation
+* [x] Real-time simulation
+* [in progress] End-to-end execution (shadow mode)
+* [ ] Paper trading (market data live + simulated fills + blotter)
 * [ ] Live broker integration (Bitso / API)
 ---
+### Real-time simulation step
+
+A new pipeline step can now simulate the latest trading decision from collected quote snapshots:
+
+* Loads quote history from `data/quotes` partitions
+* Rebuilds features and runs model inference
+* Applies strategy thresholds/cooldown filters
+* Produces latest action (`BUY`/`SELL`/`HOLD`) and target position
+* Optionally stores step artifacts under `artifacts/realtime_simulation/`
+
+Configure this behavior in `configs/realtime_simulation.yaml`.
 ### Reproducible experiments and artifacts
 
 Training runs now persist experiment bundles under `artifacts/experiments/<run_id>/` containing:
