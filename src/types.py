@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from typing import TypeAlias, Sequence, Any
-from pathlib import Path
 import numpy as np
 import pandas as pd
 from numpy.typing import NDArray
