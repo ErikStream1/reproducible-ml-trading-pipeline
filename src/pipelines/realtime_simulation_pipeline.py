@@ -70,7 +70,6 @@ def run_realtime_simulation_step(
     
     with log_step(logger, "Predict"):
         y_pred = model.predict(X)
-        print(y_pred)
         pred_series = pd.Series(y_pred, index=feat.index, dtype=float)
 
     volatility_column = cfg.get("strategy", {}).get("volatility_column", None)
