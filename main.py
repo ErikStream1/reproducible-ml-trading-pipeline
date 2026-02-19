@@ -6,7 +6,7 @@ from src.pipelines import (run_data_pipeline,
                            run_collect_quotes_pipeline,
                            run_realtime_simulation_step
                            )
-from src.utils.logger import setup_logging
+from src.utils import setup_logging
 import logging
 
 
