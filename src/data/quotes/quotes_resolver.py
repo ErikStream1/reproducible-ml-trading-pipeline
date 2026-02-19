@@ -22,5 +22,5 @@ def load_quotes(out_dir:Path, book:str)->QuoteSeries:
     df["ts_exchange"] = pd.to_datetime(df["ts_exchange"], utc = True)
     df = df.sort_values("ts_exchange").reset_index(drop = True)
     
-    return QuoteSeries(df = df[["ts_exchange", "bid", "ask"]])
+    return QuoteSeries(df = df[["ts_exchange", "bid", "ask","mid"]])
  
