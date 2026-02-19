@@ -1,30 +1,14 @@
 from __future__ import annotations
 from pathlib import Path
 
+from src.models import _load_model
 from src.types import Prediction, ConfigLike
 from src.utils import log_step, log_drop
 
-from src.models import LinearModel, XGBoostModel
 from src.pipelines import run_data_pipeline, run_feature_pipeline
 import logging
 
 logger = logging.getLogger(__name__)
-
-def _load_model(model_path: Path) ->LinearModel|XGBoostModel:
-    """
-    Loads a trained model artifact.
-    """ 
-    
-    model_path_str = str(model_path)
-    
-    if "linear" in model_path_str:
-        return LinearModel.load(model_path) 
-
-    elif "xgboost" in model_path_str:
-        return XGBoostModel.load(model_path)
-    
-    else:
-        raise ValueError("Model not found.")
 
 def run_inference_pipeline(
     cfg: ConfigLike,
