@@ -3,6 +3,7 @@ from typing import TypeAlias, Sequence
 from dataclasses import dataclass
 from enum import Enum
 from src.types import SeriesLike, IntArray
+from src.backtest import RealtimeSimulationStepResult
 
 class OrderSide(str, Enum):
     BUY = "buy"
@@ -19,3 +20,9 @@ class Fill:
 PositionLike: TypeAlias = IntArray | SeriesLike
 FillVectorLike: TypeAlias = Sequence[Fill]
 
+@dataclass(frozen=True)
+class ShadowExecutionResult:
+    step: RealtimeSimulationStepResult
+    fills_count: int
+    has_position_change: bool
+    artifact_dir: str | None
