@@ -35,7 +35,11 @@ def run_data_pipeline(cfg:ConfigLike,
         df = pd.concat([df_old, daily_candle], ignore_index=True)
     else:
         df = load_historic_btc_data()
-    print(df)
+
+    df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
+    df = df.dropna(subset=["Date"]).sort_values("Date")
+    df = df.drop_duplicates(subset=["Date"], keep="last").reset_index(drop=True)
+    
     validate_btc_data(df)
     df.to_csv(raw_data_path, index=False)
 
