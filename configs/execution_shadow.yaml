@@ -1,5 +1,7 @@
 execution_shadow:
+  collect_quotes_first: true
   artifacts:
     output_dir: artifacts/execution_shadow
     step_filename: last_step_with_execution.json
     fills_filename: fills.csv
+    result_filename: shadow_execution_result.json

@@ -4,7 +4,8 @@ from src.pipelines import (run_data_pipeline,
                            run_inference_pipeline,
                            run_model_validation_pipeline,
                            run_collect_quotes_pipeline,
-                           run_realtime_simulation_step
+                           run_realtime_simulation_step,
+                           run_end_to_end_execution_shadow_pipeline
                            )
 from src.utils import setup_logging
 import logging
@@ -23,6 +24,7 @@ def main():
         "configs/backtest.yaml",
         "configs/bitso.yaml",
         "configs/quotes.yaml",
+        "configs/execution_shadow.yaml",
         "configs/realtime_simulation.yaml",     
         "configs/logging.yaml"
     )
@@ -40,6 +42,8 @@ def main():
     #run_model_validation(cfg)
     #run_training_pipeline(cfg)
     #run_inference_pipeline(cfg)
-    run_collect_quotes_pipeline(cfg=cfg)
+    #run_collect_quotes_pipeline(cfg)
+    #run_realtime_simulation_step(cfg)
+    run_end_to_end_execution_shadow_pipeline(cfg)
 if __name__ == "__main__":
     main()
