@@ -19,7 +19,7 @@ def run_collect_quotes_pipeline(cfg: ConfigLike)->None:
     book = quotes_cfg["book"]
     if book not in available:
         logger.warning("Book %s is not in available books", book)
-        logger.info("Some available books: ", sorted(list(available))[:30])
+        logger.info("Some available books: %s", sorted(list(available))[:30])
         logger.info("Look for the correct book and update configs/quotes.yaml")
 
     collect_quotes(cfg=cfg)

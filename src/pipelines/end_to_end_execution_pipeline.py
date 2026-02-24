@@ -27,8 +27,9 @@ def run_end_to_end_execution_shadow_pipeline(
     No live orders are sent.
     """
     
+    execution_shadow_cfg = cfg.get("execution_shadow", {})
     if collect_quotes_first is None:
-        collect_quotes_first = cfg["execution_shadow"].get("collect_quotes_first", False)
+        collect_quotes_first = execution_shadow_cfg.get("collect_quotes_first", False)
     
     if collect_quotes_first:
         with log_step(logger, "Collect quotes"):

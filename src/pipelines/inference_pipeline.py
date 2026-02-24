@@ -42,7 +42,7 @@ def run_inference_pipeline(
             
             try:
                 tmp_out.unlink(missing_ok=True)
-            except Exception:
+            except OSError:
                 pass
         else:
             df = run_data_pipeline(cfg)
@@ -76,10 +76,11 @@ def run_inference_pipeline(
         if hasattr(model, "info") and getattr(model, "info") is not None:
             feature_names = getattr(model.info, "feature_names", None)
         
-        if feature_names is not None and not feature_names.empty:
-            for c in feature_names:
-                if c not in X.columns:
-                    raise ValueError(f"Inference is missing required feature columns: {c}")
+        if feature_names is not None and len(feature_names) > 0:
+            missing = [c for c in feature_names if c not in X.columns]
+            if missing:
+                raise ValueError(f"Inference is missing required feature columns: {missing}")
+            X = X.loc[:, list(feature_names)]
 
     with log_step(logger, "Prediction"):        
         X_next = X.tail(1)
