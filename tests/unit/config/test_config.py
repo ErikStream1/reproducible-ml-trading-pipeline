@@ -6,7 +6,7 @@ from src.config import load_config, load_yaml
 
 
 def test_load_yaml_raises_for_missing_file(tmp_path: Path) -> None:
-    with pytest.raises(FileExistsError):
+    with pytest.raises(FileNotFoundError):
         load_yaml(tmp_path / "missing.yaml")
 
 
