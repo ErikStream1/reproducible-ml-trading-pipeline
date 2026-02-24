@@ -145,12 +145,17 @@ def test_run_realtime_simulation_step_generates_latest_action(
     )
 
     result = run_realtime_simulation_step(cfg)
+    result_2 = run_realtime_simulation_step(cfg)
 
     assert result.target_position == 1
+    assert result_2.target_position == 1
     assert result.action == "BUY"
     assert result.predicted_return == pytest.approx(0.01)
     assert (tmp_path / "artifacts" / "last_step.json").exists()
     assert (tmp_path / "artifacts" / "steps.csv").exists()
+
+    history_df = pd.read_csv(tmp_path / "artifacts" / "steps.csv")
+    assert len(history_df) == 1
 
 
 def test_run_realtime_simulation_step_raises_for_short_history(
