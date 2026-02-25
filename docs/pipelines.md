@@ -14,6 +14,7 @@ Implemented pipelines:
 -   `run_inference_pipeline`
 -   `run_model_validation_pipeline`
 -   `run_collect_quotes_pipeline`
+-   `run_end_to_end_execution_shadow_pipeline`
 -   `run_backtest_pipeline`
 
 ------------------------------------------------------------------------
@@ -209,7 +210,7 @@ Implemented pipelines:
 
 ## Execution from `main.py`
 
-`main.py` loads all YAML configs and currently executes `run_collect_quotes_pipeline(cfg=cfg)`; other pipeline calls remain commented for manual activation.
+`main.py` loads all YAML configs and currently executes `run_end_to_end_execution_shadow_pipeline(cfg=cfg)`; other pipeline calls remain commented for manual activation.
 
 ------------------------------------------------------------------------
 
@@ -250,3 +251,40 @@ Without changing the structure of other docs, these are the key consistency note
 ### Outputs
 
 - `RealtimeSimulationStepResult` dataclass
+------------------------------------------------------------------------
+
+## 9) End-to-end execution (shadow mode)
+
+**Function**: `run_end_to_end_execution_shadow_pipeline(cfg, collect_quotes_first=None)`
+
+**File**: `src/pipelines/end_to_end_execution_pipeline.py`
+
+### Flow
+
+1. Optionally runs quote collection first when `execution_shadow.collect_quotes_first` is enabled.
+2. Runs `run_realtime_simulation_step(cfg)` to produce the latest decision (`BUY`/`SELL`/`HOLD`).
+3. Builds a 2-row target-position series (`previous -> latest`) and synthetic price frame from latest `bid/ask/mid`.
+4. Simulates fills with `simulate_fills_from_target_position(...)`.
+5. Persists execution artifacts via `_persist_shadow_execution_artifacts(...)` when output dir is configured.
+6. Returns `ShadowExecutionResult` (step details, fills count, position-change flag, artifact directory).
+
+### Key config inputs
+
+- `execution_shadow.collect_quotes_first`
+- `execution_shadow.artifacts.output_dir`
+- `execution_shadow.artifacts.step_filename`
+- `execution_shadow.artifacts.fills_filename`
+- `execution_shadow.artifacts.result_filename`
+- `realtime_simulation.*`
+- `quotes.*`
+- `inference.artifacts.model_path`
+- `strategy.*`
+- `execution.*`
+
+### Outputs
+
+- `ShadowExecutionResult`
+- `artifacts/execution_shadow/last_step_with_execution.json` (default)
+- `artifacts/execution_shadow/fills.csv` (default)
+- `artifacts/execution_shadow/shadow_execution_result.json` (default)
+
