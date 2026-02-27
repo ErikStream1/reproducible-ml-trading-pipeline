@@ -1,5 +1,4 @@
 from .types import (GapSummaryLike,
-                    SummaryLike,
                     FoldMetricLike,
                     FoldLike)
 
@@ -16,7 +15,6 @@ from .scoring import (
                       )
 
 __all__ = ["GapSummaryLike",
-           "SummaryLike",
            "FoldMetricLike",
            "FoldLike",
             "walk_forward_splits",

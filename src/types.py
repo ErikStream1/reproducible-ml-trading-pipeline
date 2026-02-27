@@ -24,4 +24,7 @@ paramsLike: TypeAlias = Mapping[str, Any] | None
 payloadLike: TypeAlias = dict[str, Any]
 ConfigLike: TypeAlias = dict[str, Any]
 
+SummaryLike: TypeAlias = dict[str, Any]
+
+
 

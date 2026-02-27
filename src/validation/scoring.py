@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import  Any, Mapping
 from src.evaluation import rmse, mae, directional_accuracy
-from src.validation import SummaryLike,FoldMetricLike, FoldLike,GapSummaryLike
-from src.types import SeriesLike
+from src.validation import FoldMetricLike, FoldLike,GapSummaryLike
+from src.types import SeriesLike, SummaryLike
 import numpy as np
 
 def naive_persistence(y_true: SeriesLike)->SeriesLike:

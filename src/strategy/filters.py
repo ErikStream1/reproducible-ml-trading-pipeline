@@ -1,14 +1,14 @@
 from __future__ import annotations
-from src.types import VectorLike
+from src.types import VectorLike, SeriesLike
 import pandas as pd
 
 def apply_vol_filter(
     vol_max: float | None,
-    desired_position: pd.Series, 
+    desired_position: SeriesLike, 
     volatility: VectorLike | None = None,
-)-> pd.Series:
+)-> SeriesLike:
     
-    if not isinstance(volatility, pd.Series):
+    if not isinstance(volatility, SeriesLike):
         volatility = pd.Series(volatility)
         
     if volatility.empty or vol_max is None:
@@ -22,9 +22,9 @@ def apply_vol_filter(
     return out
 
 def apply_cooldown(
-    target_position: pd.Series,
+    target_position: SeriesLike,
     cooldown_bars: int
-)->pd.Series:
+)->SeriesLike:
     
     if cooldown_bars <= 0:
         return target_position
