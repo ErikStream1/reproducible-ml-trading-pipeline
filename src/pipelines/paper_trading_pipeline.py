@@ -43,8 +43,6 @@ def run_paper_trading_pipeline(
     previous_position = _load_previous_position(state_path)
 
     with log_step(logger, "Paper execution simulation"):
-        # Simulate only the net transition for this step to avoid replaying
-        # historical position as an additional synthetic fill.
         net_target = int(step_result.target_position) - previous_position
         target_series = pd.Series([0, net_target], dtype=int)
         price_frame = pd.DataFrame(
