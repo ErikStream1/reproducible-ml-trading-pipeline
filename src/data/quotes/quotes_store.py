@@ -47,7 +47,7 @@ class QuoteStore:
         
         df = pd.DataFrame.from_records(data, index = (range(len(rows))))
             
-        df.sort_values("ts_exchange").reset_index(drop = True)
+        df = df.sort_values("ts_exchange").reset_index(drop = True)
         df.to_parquet(out_path, index = False)
         
         return out_path
