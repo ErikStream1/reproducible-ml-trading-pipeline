@@ -15,6 +15,7 @@ Implemented pipelines:
 -   `run_model_validation_pipeline`
 -   `run_collect_quotes_pipeline`
 -   `run_end_to_end_execution_shadow_pipeline`
+-   `run_paper_trading_pipeline`
 -   `run_backtest_pipeline`
 
 ------------------------------------------------------------------------
@@ -287,4 +288,41 @@ Without changing the structure of other docs, these are the key consistency note
 - `artifacts/execution_shadow/last_step_with_execution.json` (default)
 - `artifacts/execution_shadow/fills.csv` (default)
 - `artifacts/execution_shadow/shadow_execution_result.json` (default)
+
+------------------------------------------------------------------------
+
+## 10) Paper trading pipeline
+
+**Function**: `run_paper_trading_pipeline(cfg, collect_quotes_first=None)`
+
+**File**: `src/pipelines/paper_trading_pipeline.py`
+
+### Flow
+
+1. Optionally runs quote collection first when `paper_trading.collect_quotes_first` is enabled.
+2. Runs `run_realtime_simulation_step(cfg)` to produce the latest decision and target position.
+3. Loads previous paper position from persisted state (`state.json`).
+4. Computes net target change (`latest target - previous position`) and simulates fills.
+5. Appends one row to paper blotter and optional fills rows.
+6. Updates state with latest position and returns `PaperTradingResult`.
+
+### Key config inputs
+
+- `paper_trading.collect_quotes_first`
+- `paper_trading.artifacts.output_dir`
+- `paper_trading.artifacts.blotter_filename`
+- `paper_trading.artifacts.fills_filename`
+- `paper_trading.artifacts.state_filename`
+- `realtime_simulation.*`
+- `quotes.*`
+- `inference.artifacts.model_path`
+- `strategy.*`
+- `execution.*`
+
+### Outputs
+
+- `PaperTradingResult`
+- `artifacts/paper_trading/blotter.csv` (default)
+- `artifacts/paper_trading/fills.csv` (default, when fills occur)
+- `artifacts/paper_trading/state.json` (default)
 
