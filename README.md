@@ -145,8 +145,8 @@ This is an **ongoing project**, actively being extended and refined. Planned and
 * [x] Reproducible experiments and artifacts
 * [x] Real-time simulation
 * [x] End-to-end execution (shadow mode)
-* [in progress] Paper trading (market data live + simulated fills + blotter)
-* [ ] Live broker integration (Bitso / API)
+* [x] Paper trading (market data live + simulated fills + blotter)
+* [in progress] Live broker integration (Bitso / API)
 ---
 ### Real-time simulation step
 
