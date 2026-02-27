@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TypeAlias, Sequence, Any
+from typing import TypeAlias, Sequence, Any, Mapping
 import numpy as np
 import pandas as pd
 from numpy.typing import NDArray
@@ -20,6 +20,8 @@ XLike: TypeAlias = FrameLike
 YLike: TypeAlias =  VectorLike
 Prediction: TypeAlias =  VectorLike
 
+paramsLike: TypeAlias = Mapping[str, Any] | None
+payloadLike: TypeAlias = dict[str, Any]
 ConfigLike: TypeAlias = dict[str, Any]
 
 

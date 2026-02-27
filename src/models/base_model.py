@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from typing import Self
-from src.types import XLike, YLike, Prediction
-from src.models import infoLike, payloadLike
+from src.types import XLike, YLike, Prediction, payloadLike
+from src.models import infoLike
 from pathlib import Path
 from abc import ABC, abstractmethod
 from dataclasses import asdict

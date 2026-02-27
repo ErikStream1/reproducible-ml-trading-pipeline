@@ -6,8 +6,7 @@ from pathlib import Path
 from src.data import BitsoConfig, BitsoError
 from datetime import datetime, timezone
 from decimal import Decimal
-from src.models import paramsLike, payloadLike
-from src.types import ConfigLike
+from src.types import ConfigLike, paramsLike, payloadLike
 import requests
 from tenacity import (retry,
                       wait_exponential,

@@ -1,15 +1,14 @@
 from __future__ import annotations
 
 from typing import Self, final
-from src.types import XLike, YLike, Prediction
+from src.types import XLike, YLike, Prediction, paramsLike, payloadLike
 from dataclasses import replace
 from xgboost import XGBRegressor
 
 from src.models import (BaseModel, 
                         ModelInfo, 
-                        paramsLike, 
                         infoLike,
-                        payloadLike,)
+                        )
 
 @final
 class XGBoostModel(BaseModel):

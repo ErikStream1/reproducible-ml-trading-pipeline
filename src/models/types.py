@@ -1,12 +1,10 @@
 from __future__ import annotations
 from typing import Any, Protocol, Mapping, TypeVar, TypeAlias
 from dataclasses import dataclass
-
+from src.types import paramsLike
 from pathlib import Path
 from src.types import XLike, YLike, Prediction, IndexLike
 
-paramsLike: TypeAlias = Mapping[str, Any] | None
-payloadLike: TypeAlias = dict[str, Any]
 ######################################################################
 
 @dataclass(frozen = True)
