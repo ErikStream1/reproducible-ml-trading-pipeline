@@ -87,6 +87,15 @@ def run_ledger(
                 elif side == OrderSide.BUY.value:
                     max_affordable = cash.loc[idx] / price
                     buy_qty = min(qty, max_affordable)
+                    if buy_qty <= 0:
+                        logger.debug(
+                            "Reject BUY (insufficient cash). ts=%s requested_qty=%.6f cash=%.6f",
+                            idx,
+                            qty,
+                            cash.loc[idx]
+                        )
+                        continue
+                    
                     notional = buy_qty * price
                     fee = fee_rate * notional
                     
