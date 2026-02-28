@@ -1,6 +1,5 @@
 from __future__ import annotations
 from src.types import Prediction, YLike
-from sklearn.metrics import root_mean_squared_error
 import numpy as np
 
 def rmse(y_true: YLike, 
@@ -14,8 +13,8 @@ def rmse(y_true: YLike,
     
     y_true = np.asarray(y_true)
     y_pred = np.asarray(y_pred)
-    
-    return root_mean_squared_error(y_true = y_true,y_pred = y_pred)
+    rmse = float(np.sqrt(np.mean((y_true - y_pred) ** 2)))
+    return rmse
 
 def mae(y_true:YLike, 
         y_pred:Prediction) -> float:
