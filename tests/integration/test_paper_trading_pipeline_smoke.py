@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.backtest import RealtimeSimulationStepResult
+from src.execution import RealtimeSimulationStepResult
 from src.pipelines import run_paper_trading_pipeline
 
 

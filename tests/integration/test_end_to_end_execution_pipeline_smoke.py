@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 import json
 
-from src.backtest import RealtimeSimulationStepResult
+from src.execution import RealtimeSimulationStepResult
 from src.pipelines import run_end_to_end_execution_shadow_pipeline
 
 
