@@ -40,7 +40,7 @@ class BitsoClient:
     def _get(self, path: Path, params: paramsLike = None,)->dict[str, Any]:
         url = f"{self.obj.base_url}/{path}"
         r = self._session.get(url, params = params, timeout=self.obj.timeout_s)
-        r.raise_for_status
+        r.raise_for_status()
         data = r.json()
         if not data.get("success", False):
             raise BitsoError(f"Bitso API returned success = false: {data}")
