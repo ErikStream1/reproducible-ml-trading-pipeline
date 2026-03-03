@@ -29,6 +29,10 @@ Typical files:
     * `strategy.yaml`
     * `execution.yaml`
     * `backtest.yaml`
+    * `execution_shadow.yaml`
+    * `paper_trading.yaml`
+* Runtime:
+    * `logging.yaml`
 
 ## Run
 Run commands from the repo root.
