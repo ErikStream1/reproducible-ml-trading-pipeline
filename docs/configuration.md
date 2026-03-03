@@ -209,3 +209,33 @@ Key fields:
 - `backtest.execute_on`: Price field used for execution (e.g., `mid`, `bid`, `ask`, `close`, `next_close`).
 - `periods_per_year: 15768000`  # 2s bars (experimental). Update if bar frequency changes.
 
+### `execution_shadow.yaml`
+**Purpose:** shadow execution orchestration for the end-to-end execution pipeline.
+
+Key fields:
+- `execution_shadow.collect_quotes_first`: If `true`, runs quote collection before simulation/execution.
+- `execution_shadow.artifacts.output_dir`: Where shadow artifacts are written.
+- `execution_shadow.artifacts.step_filename`: Latest simulation step snapshot filename.
+- `execution_shadow.artifacts.fills_filename`: Simulated fills filename.
+- `execution_shadow.artifacts.result_filename`: Final pipeline result summary filename.
+
+---
+### `paper_trading.yaml`
+**Purpose:** paper trading state and blotter persistence.
+
+Key fields:
+- `paper_trading.collect_quotes_first`: If `true`, updates quotes before each paper-trading step.
+- `paper_trading.artifacts.output_dir`: Output folder for state + blotter artifacts.
+- `paper_trading.artifacts.blotter_filename`: Blotter CSV filename.
+- `paper_trading.artifacts.fills_filename`: Optional fills CSV filename.
+- `paper_trading.artifacts.state_filename`: Persisted position-state JSON filename.
+
+---
+### `logging.yaml`
+**Purpose:** centralized runtime logging behavior.
+
+Key fields:
+- `logging.level`: Log level (`DEBUG`, `INFO`, etc.).
+- `logging.file`: Optional path for persisted log output.
+- `logging.overwrite`: If `true`, truncates file logs on each run.
+
