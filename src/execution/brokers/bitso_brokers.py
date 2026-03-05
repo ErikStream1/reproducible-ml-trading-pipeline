@@ -13,7 +13,8 @@ class BitsoBrokerClient:
     
     def __init__(self, cfg: ConfigLike):
         live_cfg = cfg["live_broker"]
-        local_cfg = cfg["local_live_broker"]
+        local_cfg = cfg["local_live_broker"] #Do not store API keys or secrets in the repository. 
+                                             #Keep them in a local .env or .yaml file that is ignored by Git.
         self.base_url = (live_cfg.get("base_url", "https://api.bitso.com/v3")).rstrip("/")
         self.timeout_s = float(live_cfg.get("timeout_s", 10))
         self.api_key = str(local_cfg["api_key"])
