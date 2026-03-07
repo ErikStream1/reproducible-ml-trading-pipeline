@@ -220,6 +220,23 @@ Key fields:
 - `execution_shadow.artifacts.result_filename`: Final pipeline result summary filename.
 
 ---
+### `live_broker.yaml`
+**Purpose:** live broker order submission settings for Bitso private API.
+
+Key fields:
+- `live_broker.collect_quotes_first`: If `true`, refreshes quotes before the decision step.
+- `live_broker.dry_run`: If `true`, computes and returns order payload without placing an order.
+- `live_broker.client.base_url`: Bitso API base URL.
+- `live_broker.client.timeout_s`: HTTP timeout in seconds.
+
+### `local_live_broker`
+**Purpose:** store api_key and api_secret. This file contains sensitive credentials and must never be committed or pushed.
+
+Key fields:
+-  `local_live_broker.api_key: "<your-api-key>"`
+-  `local_live_broker.api_secret: "<your-api-secret>"`
+
+---
 ### `paper_trading.yaml`
 **Purpose:** paper trading state and blotter persistence.
 

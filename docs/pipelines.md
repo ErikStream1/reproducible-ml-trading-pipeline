@@ -326,3 +326,27 @@ Without changing the structure of other docs, these are the key consistency note
 - `artifacts/paper_trading/fills.csv` (default, when fills occur)
 - `artifacts/paper_trading/state.json` (default)
 
+## 11) Live broker execution (Bitso API)
+
+**Function**: `run_live_broker_pipeline(cfg, collect_quotes_first=None)`
+
+**File**: `src/pipelines/live_broker_pipeline.py`
+
+### Flow
+
+1. Optionally runs quote collection first (`live_broker.collect_quotes_first`).
+2. Runs `run_realtime_simulation_step(cfg)` to produce latest target position.
+3. Reads previous position from paper-trading state storage.
+4. Computes net order (`target_position - previous_position`).
+5. Returns `noop` result when net target is zero.
+6. Returns `dry_run` payload when `live_broker.dry_run` is enabled.
+7. If dry-run is disabled, sends authenticated market order to Bitso private endpoint via `BitsoBrokerClient`.
+
+### Key config inputs
+
+- `live_broker.collect_quotes_first`
+- `live_broker.dry_run`
+- `live_broker.client.*`
+- `local_live_broker.*`
+- `execution.qty`
+- `quotes.book`
