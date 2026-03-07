@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Any, TypeAlias, Sequence
 from dataclasses import dataclass
 from enum import Enum
-from src.types import SeriesLike, IntArray
+from src.types import SeriesLike, IntArray, payloadLike
 
 
 class OrderSide(str, Enum):
@@ -54,3 +54,16 @@ class BitsoOrderResponse:
     oid: str | None
     status: str
     raw: dict[str, Any]
+    
+@dataclass(frozen = True)
+class LiveBrokerOrderResult:
+    timestamp: str
+    action: str
+    target_position: int
+    previous_position: int
+    order_sent: bool
+    side: str | None
+    major: str | None
+    order_id: str | None
+    status: str
+    payload: payloadLike
