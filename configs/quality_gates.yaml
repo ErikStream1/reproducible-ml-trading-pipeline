@@ -1,0 +1,5 @@
+quote_quality:
+  enabled: true
+  max_staleness_seconds: 180
+  max_relative_spread: 0.01
+  min_rows: 2
