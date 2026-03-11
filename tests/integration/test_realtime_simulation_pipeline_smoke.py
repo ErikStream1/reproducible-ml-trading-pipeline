@@ -4,14 +4,14 @@ from dataclasses import dataclass
 import pandas as pd
 import pytest
 import joblib
-
+from src.types import FrameLike
 from src.data import QuoteSeries
 from src.pipelines import run_realtime_simulation_step
 
 @dataclass
 class DummyModel:
     features: list[str]
-    def predict(self, X: pd.DataFrame):
+    def predict(self, X: FrameLike):
         return [0.001] * (len(X) - 1) + [0.01]
     def save(self, path: Path) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -78,6 +78,12 @@ def _base_cfg(tmp_path: Path) -> dict:
                 "history_filename": "steps.csv",
             },
         },
+        "quote_quality":{
+            "enabled": True,
+            "max_staleness_seconds": 60,
+            "max_relative_spread": 0.05,
+            "min_rows": 2
+        }
     }
 
 
@@ -117,7 +123,7 @@ def test_run_realtime_simulation_step_generates_latest_action(
     dummy_model.save(model_path_)
     
     book = quotes_cfg["book"]
-    date = "2000-01-01"
+    date = "2024-01-01"
     data_now = date + "000000"
     
     part_dir = f"{quotes_out_dir}/book={book}/date={date}"
@@ -139,6 +145,12 @@ def test_run_realtime_simulation_step_generates_latest_action(
         "src.pipelines.realtime_simulation_pipeline.run_data_pipeline",
         lambda cfg: historic_df,
     )
+    
+    monkeypatch.setattr(
+        "src.data.quotes.quality_gates.pd.Timestamp.now",
+        lambda tz: pd.Timestamp(2024,1,1, tz = "UTC")
+    )
+    
     monkeypatch.setattr(
         "src.pipelines.realtime_simulation_pipeline._load_model",
         lambda model_path: DummyModel.load(path = model_path_),
@@ -186,7 +198,7 @@ def test_run_realtime_simulation_step_raises_for_short_history(
         }
     )
     book = quotes_cfg["book"]
-    date = "2000-01-01"
+    date = "2024-01-01"
     data_now = date + "000000"
     
     part_dir = f"{quotes_out_dir}/book={book}/date={date}"
@@ -207,6 +219,60 @@ def test_run_realtime_simulation_step_raises_for_short_history(
         "src.pipelines.realtime_simulation_pipeline.run_data_pipeline",
         lambda cfg: historic_df,
     )
-
+    monkeypatch.setattr(
+        "src.data.quotes.quality_gates.pd.Timestamp.now",
+        lambda tz: pd.Timestamp(2024,1,1, tz = "UTC")
+    )
     with pytest.raises(ValueError, match="Not enough historical rows"):
+        run_realtime_simulation_step(cfg)
+        
+def test_run_realtime_simulation_step_raises_on_stale_quotes(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    cfg = _base_cfg(tmp_path)
+    quotes_cfg = cfg["quotes"]
+    quotes_out_dir = Path(quotes_cfg["out_dir"])    
+    quotes_df = pd.DataFrame(
+        {
+            "ts_exchange": pd.to_datetime(["2024-01-01T00:00:00Z", "2024-01-01T00:01:00Z"]),
+            "bid": [100, 101],
+            "ask": [101, 102],
+            "mid": [100.5, 101.5],
+        }
+    )
+    historic_df = pd.DataFrame(
+        {
+            "Date": pd.date_range("2024-01-01", periods=6, freq="D"),
+            "Open": [90, 91, 92, 93, 94, 95],
+            "High": [91, 92, 93, 94, 95, 96],
+            "Low": [89, 90, 91, 92, 93, 94],
+            "Close": [90.5, 91.5, 92.5, 93.5, 94.5, 95.5],
+            "Volume": [1000, 1005, 1010, 1015, 1020, 1025],
+        }
+    )
+    #parcha pero no guarda
+    book = quotes_cfg["book"]
+    date = "2024-01-01"
+    data_now = date + "000000"
+    
+    part_dir = f"{quotes_out_dir}/book={book}/date={date}"
+    part_dir = Path(part_dir)    
+    part_dir.mkdir(parents = True, exist_ok = True)
+    
+    fname = f"quotes_{data_now}.parquet"
+    output_path = part_dir / fname
+    quotes_df = quotes_df.reset_index(drop = True)
+    pd.DataFrame.to_parquet(quotes_df, path=output_path, index = False)
+    
+    monkeypatch.setattr(
+        "src.data.quotes.quotes_resolver.load_quotes",
+        lambda quotes_out_dir, book: QuoteSeries(df=quotes_df),
+    )
+    monkeypatch.setattr(
+        "src.pipelines.realtime_simulation_pipeline.run_data_pipeline",
+        lambda cfg: historic_df,
+    )
+
+    with pytest.raises(ValueError, match="stale latest quote"):
         run_realtime_simulation_step(cfg)

@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.data import load_quotes
+from src.data import load_quotes, validate_quote_quality
 from src.pipelines import run_data_pipeline, run_feature_pipeline
 from src.strategy import threshold_signal
 from src.backtest import _persist_step_result
@@ -40,7 +40,10 @@ def run_realtime_simulation_step(
     with log_step(logger, "Load quotes"):
         quote_series = load_quotes(out_dir=out_dir, book=book)
         quotes_df = quote_series.df.copy()
-
+        
+    with log_step(logger, "Quote quality gates"):
+        validate_quote_quality(quotes_df=quotes_df, cfg = cfg)
+    
     with log_step(logger, "Data pipeline"):
         market = run_data_pipeline(cfg)
     if len(market) < min_history_rows:
