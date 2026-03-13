@@ -196,20 +196,26 @@ pip install -r requirements.txt
 from src.pipelines import run_training_pipeline
 
 setup_logging()
-    
-cfg = load_config(
-    "configs/data.yaml",
-    "configs/features.yaml",
-    "configs/training.yaml",
-    "configs/models.yaml",
-    "configs/inference.yaml",
-    "configs/strategy.yaml",
-    "configs/execution.yaml",
-    "configs/backtest.yaml",
-    "configs/bitso.yaml",
-    "configs/quotes.yaml",
-    "configs/logging.yaml"
-)
+  
+  cfg = load_config(
+      "configs/data.yaml",
+      "configs/features.yaml",
+      "configs/training.yaml",
+      "configs/models.yaml",
+      "configs/inference.yaml",
+      "configs/strategy.yaml",
+      "configs/execution.yaml",
+      "configs/backtest.yaml",
+      "configs/bitso.yaml",
+      "configs/quotes.yaml",
+      "configs/execution_shadow.yaml",
+      "configs/paper_trading.yaml",
+      "configs/realtime_simulation.yaml",
+      "configs/live_broker.yaml",
+      "configs/local_live_broker.yaml",
+      "configs/quality_gates.yaml",     
+      "configs/logging.yaml"
+  )
 
 run_training_pipeline(cfg)
 
