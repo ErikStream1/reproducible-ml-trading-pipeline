@@ -2,7 +2,7 @@ strategy:
     type: "threshold"
     side_mode: "long_only"    #long only | long short
     enter_threshold: 0.2
-    exit_threshold: 0.0
+    exit_threshold: 0.0005
     cooldown_bars: 3
     volatility_column: "Volatility_7" #Volatility_N (where N is the desired period)
 
