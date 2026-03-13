@@ -73,3 +73,10 @@ def test_validate_quote_quality_detects_spread_spike() -> None:
 
     with pytest.raises(ValueError, match="spread spike"):
         validate_quote_quality(df, cfg, now_utc=now)
+
+def test_validate_quote_quality_detects_insufficient_rows() -> None:
+    cfg = _cfg()
+    df = _quotes_frame().head(1)
+
+    with pytest.raises(ValueError, match="insufficient quote rows"):
+        validate_quote_quality(df, cfg)
