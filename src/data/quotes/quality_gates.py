@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import pandas as pd
-
 from src.types import FrameLike, ConfigLike
 
 def validate_quote_quality(
@@ -17,11 +16,19 @@ def validate_quote_quality(
     if missing_cols:
         raise ValueError(f"Quote schema drift: missing required columns: {missing_cols}")
     
+    min_rows = int(quote_quality_cfg.get("min_rows", 1))
+    if len(quotes_df) < min_rows:
+        raise ValueError(
+            "Quote quality gate failed: insufficient quote rows. "
+            f"rows={len(quotes_df)} required={min_rows}"
+        )
+        
     ts = pd.to_datetime(quotes_df["ts_exchange"], utc=True, errors="coerce")
     if ts.isna().any():
         raise ValueError("Quote schema drift: ts_exchange contains invalid timestamps")
 
-    numeric = quotes_df[["bid", "ask", "mid"]].apply(pd.to_numeric, errors="coerce")
+    numeric = quotes_df[["bid", "ask", "mid"]].copy()
+    numeric = numeric.apply(pd.to_numeric, errors = "coerce")
     if numeric.isna().any().any():
         raise ValueError("Quote quality gate failed: missing or non-numeric bid/ask/mid values")
 
