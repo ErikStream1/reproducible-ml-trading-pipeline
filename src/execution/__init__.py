@@ -7,7 +7,8 @@ from .types import (OrderSide,
                     PaperTradingResult,
                     BitsoBrokerError,
                     BitsoOrderResponse,
-                    LiveBrokerOrderResult)
+                    LiveBrokerOrderResult,
+                    PreTradeRiskDecision)
 
 from .fills import(
     fill_price_next_close,
@@ -51,4 +52,5 @@ __all__ = [
            "_load_previous_position",
            "_append_paper_trading_rows",
            "BitsoBrokerClient",
+           "PreTradeRiskDecision",
            ]

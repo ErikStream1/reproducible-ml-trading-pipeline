@@ -67,3 +67,9 @@ class LiveBrokerOrderResult:
     order_id: str | None
     status: str
     payload: payloadLike
+
+@dataclass(frozen=True)
+class PreTradeRiskDecision:
+    allowed: bool
+    reasons: tuple[str, ...]
+    details: dict[str, float | int | str | bool | None]
