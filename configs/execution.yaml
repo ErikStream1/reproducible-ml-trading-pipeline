@@ -9,3 +9,10 @@ execution:
       bps: 5
       vol_k: 0.0
       
+    risk_limits:
+      enabled: true
+      max_position: 5
+      max_notional_per_day: 25000
+      max_trades_per_hour: 12
+      cooldown_minutes: 5
+      cooldown_override: false
