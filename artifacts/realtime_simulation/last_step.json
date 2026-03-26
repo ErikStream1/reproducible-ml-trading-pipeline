@@ -1,9 +1,9 @@
 {
-  "timestamp": "2026-02-25T18:31:07+00:00",
-  "bid": 69363.0,
-  "ask": 69398.0,
-  "mid": 69380.5,
-  "predicted_return": -0.020122334361076355,
+  "timestamp": "2026-03-13T22:18:18+00:00",
+  "bid": 70851.0,
+  "ask": 70875.0,
+  "mid": 70863.0,
+  "predicted_return": 0.023077454417943954,
   "target_position": 0,
   "action": "HOLD"
 }
