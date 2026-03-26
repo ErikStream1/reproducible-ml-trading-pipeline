@@ -6,6 +6,9 @@ from src.validation import FoldMetricLike, FoldLike,GapSummaryLike
 from src.types import SeriesLike, SummaryLike
 import numpy as np
 
+HIGHER_IS_BETTER = {"directional_accuracy"}
+LOWER_IS_BETTER = {"rmse", "mae"}
+
 def naive_persistence(y_true: SeriesLike)->SeriesLike:
      return y_true.shift(1).dropna()
 
@@ -28,18 +31,23 @@ def compute_score(
 def baseline_gap(
     model_summary: SummaryLike,
     baseline_summary: SummaryLike,
-    metric:str="rmse"
+    metric:str
 )->GapSummaryLike:
-
     m = model_summary.get(f"{metric}_mean", np.nan)
     b = baseline_summary.get(f"{metric}_mean", np.nan)
-    
+
     if np.isnan(m) or np.isnan(b):
-        return {"gap_abs": float("nan"), "gap_real": float(np.nan)}
-    
-    gap_abs = b - m
-    gap_rel = (b-m)/b if b!=0 else float("nan")
-    
+        return {"gap_abs": float("nan"), "gap_real": float("nan")}
+
+    if metric in HIGHER_IS_BETTER:
+        gap_abs = m - b
+        gap_rel = (m - b) / abs(b) if b != 0 else float("nan")
+    elif metric in LOWER_IS_BETTER:
+        gap_abs = b - m
+        gap_rel = (b - m) / abs(b) if b != 0 else float("nan")
+    else:
+        return {"gap_abs": float("nan"), "gap_real": float("nan")}
+
     return {"gap_abs": gap_abs, "gap_real": gap_rel}
 
 def summarize_fold_metrics(fold_metrics: FoldMetricLike) -> SummaryLike:
@@ -70,7 +78,7 @@ def summarize_fold_metrics(fold_metrics: FoldMetricLike) -> SummaryLike:
 
 def summarize(
     fold_outputs: FoldLike,
-    metrics: Mapping[str, Any] = {"primary": "rmse", "secondary1": "directional_accuracy", "secondary2": "mae"},
+    metrics: Mapping[str, Any] = {"primary": "directional_accuracy", "secondary1": "rmse", "secondary2": "mae"},
     stability_lambda: float = 0.5,
     include_baseline: bool = True,
     )->SummaryLike:
@@ -104,18 +112,20 @@ def summarize(
                 "directional_accuracy": directional_accuracy(s_y_true, y_base)
             }
             baseline_fold_metrics.append(bfm)
-    
-    summary = summarize_fold_metrics(list(fold_metrics))
+    summary = {}
+    summary["model"] = summarize_fold_metrics(list(fold_metrics))
     summary["fold_metrics"] = list(fold_outputs)
-    summary["score"] = compute_score(summary = summary, primary = metrics.get("primary", "rmse"), stability_lambda=stability_lambda)
+    model_summary = summary["model"]
+    summary["score"] = compute_score(summary = model_summary, primary = metrics.get("primary", "rmse"), stability_lambda=stability_lambda)
     
     if include_baseline:
         baseline_summary = summarize_fold_metrics(baseline_fold_metrics)
         baseline_summary["baseline_fold_metrics"] = baseline_fold_metrics
         summary["baseline"] = baseline_summary
+        
         tm = {}
         for metric in metrics.values():
-           tm[f"{metric}"] = baseline_gap(summary, baseline_summary, metric = metric)
+           tm[f"{metric}"] = baseline_gap(model_summary, baseline_summary, metric = metric)
 
         summary["baseline_gap"] = tm      
                           

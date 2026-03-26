@@ -8,7 +8,7 @@ from src.evaluation import rmse, mae, directional_accuracy
 
 from src.models import build_model
 
-from src.pipelines import run_feature_pipeline, run_data_pipeline
+from src.pipelines import run_feature_pipeline, run_data_pipeline, run_model_validation_pipeline
 
 import logging
 
@@ -57,13 +57,10 @@ def run_training_pipeline(
     with log_step(logger, "Save model"):
         model.save(complete_path)
     
+    with log_step(logger, "Validation"):
+        metrics = run_model_validation_pipeline(df, cfg)
+        report_metrics = metrics["model"]
     with log_step(logger, "Save experiment artifact"):
-        y_pred = model.predict(X)
-        metrics = {
-            "rmse": rmse(y_true=y, y_pred=y_pred),
-            "mae": mae(y_true=y, y_pred=y_pred),
-            "directional_accuracy": directional_accuracy(y_true = y, y_pred=y_pred)
-        }
         save_experiment_artifacts(
             run = run,
             model_path=complete_path,

@@ -153,3 +153,32 @@ def test_inference_pipeline_smoke(cur_model:str,
     assert out[0] is not None
     assert len(out) > 0
     assert np.isfinite(out).all()
+
+
+
+def test_inference_pipeline_allows_missing_target_column(tmp_path: Path, monkeypatch) -> None:
+    cfg: ConfigLike = {
+        "data": {
+            "paths": {
+                "raw_dir": tmp_path / "data" / "raw",
+                "raw_path": tmp_path / "btc_usd.csv",
+                "processed_path": tmp_path / Path("processed_btc_usd.csv"),
+            },
+            "schema": {"target_column": "LogReturn"},
+        },
+        "inference": {"artifacts": {"model_path": tmp_path / "artifacts/models/linear_model.joblib"}},
+    }
+
+    df = make_fake_ohlcv(n=50, with_features=True).drop(columns=["LogReturn"])
+    model = LinearModel()
+    X = df[["Open", "High", "Low", "Close", "Volume", "MA_7", "MA_30", "Momentum_7"]]
+    y = np.linspace(0.0, 1.0, len(X))
+    model.fit(X, y)
+    model.save(cfg["inference"]["artifacts"]["model_path"])
+
+    monkeypatch.setattr("src.pipelines.inference_pipeline.run_data_pipeline", lambda _cfg, tmp_output_path=None: df.copy())
+    monkeypatch.setattr("src.pipelines.inference_pipeline.run_feature_pipeline", lambda in_df, _cfg: in_df.copy())
+
+    out = run_inference_pipeline(cfg)
+    assert len(out) == 1
+    assert np.isfinite(out).all()

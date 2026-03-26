@@ -32,6 +32,10 @@ def run_backtest_pipeline(
     else:
         raise ValueError(f"Target {target} not found in feature frame")
 
+    valid_idx = X.dropna().index
+    X = X.loc[valid_idx]
+    df = df.loc[valid_idx]
+    
     model_artifact_path = model_path or cfg["inference"]["artifacts"]["model_path"]
 
     with log_step(logger, "Load model"):

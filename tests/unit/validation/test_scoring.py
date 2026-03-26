@@ -50,7 +50,7 @@ def test_scoring(mode:str):
     assert isinstance(summary["score"], float)
 
     if mode == "perfect":
-        assert summary["score"] == float(0)
+        assert summary["score"] == float(1)
     
     if mode == "perfect_direction":
-        assert summary["directional_accuracy_mean"] >= float(0.70)
+        assert summary["model"]["directional_accuracy_mean"] >= float(0.70)

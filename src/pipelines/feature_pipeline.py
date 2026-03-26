@@ -13,6 +13,12 @@ def run_feature_pipeline(df: FrameLike,
         
     df = build_features(df, cfg)
     
+    target = cfg["data"]["schema"].get("target_column")
+    horizon = int(feature_cfg.get("target_horizon", 1))
+    
+    if target in df.columns and horizon > 0:
+        df[target] = df[target].shift(-horizon)
+        
     df = df.drop(columns=drop_columns)
     
     if path is not None:

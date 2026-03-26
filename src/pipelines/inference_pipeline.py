@@ -58,18 +58,14 @@ def run_inference_pipeline(
 
     with log_step(logger, "Features"):        
         df = run_feature_pipeline(df, cfg)
-    
-    before_dropna = len(df)
-    df = df.dropna().reset_index(drop=True)
-    after_dropna = len(df)
-    
-    log_drop(logger, "Drop NAN's", before_dropna, after_dropna)
-    
+
     target = cfg["data"]["schema"].get("target_column", "LogReturn")
-    if target in df.columns:
-        X = df.drop(columns=target, errors="ignore")
-    else:
-        raise ValueError(f"Target {target} not found in X")
+    X = df.drop(columns=[target], errors="ignore")
+    before_dropna = len(X)
+    X = X.dropna().reset_index(drop=True)
+    after_dropna = len(X)
+
+    log_drop(logger, "Drop NAN's", before_dropna, after_dropna)
     
     with log_step(logger, "Check feature names", logging.DEBUG):
         feature_names = None

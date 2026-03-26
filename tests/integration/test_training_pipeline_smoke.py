@@ -66,8 +66,10 @@ def test_training_pipeline_smoke(tmp_path:Path,
         "training":{
             "random_seed": 42,
             "split":{
-                "method":"time_series",
-                "train_ratio":0.8,
+                "method": "walk_forward_splits",
+                "train_size": 10,
+                "test_size": 2,
+                "step": 2,
             },
             "model_run":{
                 "active_model": cur_model,

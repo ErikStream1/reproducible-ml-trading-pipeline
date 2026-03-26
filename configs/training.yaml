@@ -21,8 +21,8 @@ training:
     output_dir: "artifacts/experiments"
     
   evaluation:
-    primary_metric: "rmse"
+    primary_metric: "directional_accuracy"
 
     secondary_metrics:
+      - "rmese"
       - "mae"
-      - "directional_accuracy"
