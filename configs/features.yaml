@@ -1,7 +1,7 @@
 features:
   base_column: "Close"
   date_column: "Date"
-  
+  target_horizon: 1
   returns:
     pct_change:
       enabled: true
