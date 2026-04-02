@@ -29,6 +29,8 @@ from .reporting.paper_trading_store import(_paper_trading_paths,
                                             )
 from .brokers.bitso_brokers import BitsoBrokerClient
 
+from .risk_limits import evaluate_pre_trade_risk_limits
+
 __all__ = [
            "OrderSide", 
            "Fill",
@@ -53,4 +55,5 @@ __all__ = [
            "_append_paper_trading_rows",
            "BitsoBrokerClient",
            "PreTradeRiskDecision",
+           "evaluate_pre_trade_risk_limits",
            ]

@@ -5,7 +5,8 @@ import logging
 from src.execution import (LiveBrokerOrderResult,
                            BitsoBrokerClient,
                            _load_previous_position,
-                           _paper_trading_paths)
+                           _paper_trading_paths,
+                           evaluate_pre_trade_risk_limits)
 from src.pipelines import (run_collect_quotes_pipeline,
                            run_realtime_simulation_step)
 
@@ -31,7 +32,7 @@ def run_live_broker_pipeline(
     with log_step(logger, "Realtime simulation step"):
         step_result = run_realtime_simulation_step(cfg)
 
-    _, _, state_path = _paper_trading_paths(cfg)
+    blotter_path, _, state_path = _paper_trading_paths(cfg)
     previous_position = _load_previous_position(state_path)
 
     net_target = int(step_result.target_position) - previous_position
@@ -64,7 +65,34 @@ def run_live_broker_pipeline(
             status="noop",
             payload={"reason": "computed order quantity is zero"},
         )
-
+    risk = evaluate_pre_trade_risk_limits(
+        cfg = cfg,
+        blotter_path = blotter_path,
+        previous_position = previous_position,
+        requested_target_position = int(step_result.target_position),
+        order_qty_units = qty,
+        reference_price = float(step_result.mid),
+        timestamp = step_result.timestamp
+    )
+    
+    if not risk.allowed:
+        return LiveBrokerOrderResult(
+            timestamp=step_result.timestamp,
+            action=step_result.action,
+            target_position=previous_position,
+            previous_position=previous_position,
+            order_sent=False,
+            side=side,
+            major=str(qty),
+            order_id=None,
+            status="risk_blocked",
+            payload={
+                "book": cfg["quotes"]["book"],
+                "side": side,
+                "major": str(qty),
+            },
+        )
+    
     if bool(live_cfg.get("dry_run", True)):
         return LiveBrokerOrderResult(
             timestamp=step_result.timestamp,

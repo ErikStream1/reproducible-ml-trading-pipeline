@@ -4,12 +4,13 @@ import logging
 
 import pandas as pd
 
-from src.execution import PaperTradingResult, simulate_fills_from_target_position
-from src.execution.reporting.paper_trading_store import (
-    _append_paper_trading_rows,
-    _load_previous_position,
-    _paper_trading_paths,
-)
+from src.execution import (PaperTradingResult, 
+                           _append_paper_trading_rows,
+                           _load_previous_position,
+                           _paper_trading_paths,
+                           simulate_fills_from_target_position,
+                           evaluate_pre_trade_risk_limits,
+                            )
 from src.pipelines import run_collect_quotes_pipeline, run_realtime_simulation_step
 from src.types import ConfigLike
 from src.utils import log_step
@@ -39,40 +40,64 @@ def run_paper_trading_pipeline(
     with log_step(logger, "Realtime simulation step"):
         step_result = run_realtime_simulation_step(cfg)
 
-    _, _, state_path = _paper_trading_paths(cfg)
+    blotter_path, _, state_path = _paper_trading_paths(cfg)
     previous_position = _load_previous_position(state_path)
 
+    net_target = int(step_result.target_position) - previous_position
+    qty = float(str(abs(net_target))) * float(str(cfg["execution"]["qty"]))
+    
+    risk = evaluate_pre_trade_risk_limits(
+        cfg = cfg,
+        blotter_path = blotter_path,
+        previous_position = previous_position,
+        requested_target_position = int(step_result.target_position),
+        order_qty_units = qty,
+        reference_price = float(step_result.mid),
+        timestamp = step_result.timestamp
+    )
+    
+    blocked_by_risk = (net_target != 0) and (not risk.allowed)
+    
     with log_step(logger, "Paper execution simulation"):
-        net_target = int(step_result.target_position) - previous_position
-        target_series = pd.Series([0, net_target], dtype=int)
-        price_frame = pd.DataFrame(
-            {
-                "Close": [step_result.mid, step_result.mid],
-                "mid": [step_result.mid, step_result.mid],
-                "bid": [step_result.bid, step_result.bid],
-                "ask": [step_result.ask, step_result.ask],
-            }
-        )
-
-        fills = simulate_fills_from_target_position(
-            cfg=cfg,
-            target_position=target_series,
-            price_frame=price_frame,
-            volatility=None,
-        )
-
-        fills_df = pd.DataFrame(
-            [
+        fills_df = pd.DataFrame(columns = ["timestamp", "side", "qty", "price", "fee"])
+        
+        if blocked_by_risk:
+            logger.info("Pre-trade risk blocked paper order",
+                        extra = {"reasons": list(risk.reasons), "details": risk.details}
+                        )
+            executed_target_position = previous_position
+        else:
+            executed_target_position = int(step_result.target_position)
+            
+            target_series = pd.Series([0, net_target], dtype=int)
+            price_frame = pd.DataFrame(
                 {
-                    "timestamp": f.timestamp,
-                    "side": f.side.value,
-                    "qty": f.qty,
-                    "price": f.price,
-                    "fee": f.fee,
+                    "Close": [step_result.mid, step_result.mid],
+                    "mid": [step_result.mid, step_result.mid],
+                    "bid": [step_result.bid, step_result.bid],
+                    "ask": [step_result.ask, step_result.ask],
                 }
-                for f in fills
-            ]
-        )
+            )
+
+            fills = simulate_fills_from_target_position(
+                cfg=cfg,
+                target_position=target_series,
+                price_frame=price_frame,
+                volatility=None,
+            )
+
+            fills_df = pd.DataFrame(
+                [
+                    {
+                        "timestamp": f.timestamp,
+                        "side": f.side.value,
+                        "qty": f.qty,
+                        "price": f.price,
+                        "fee": f.fee,
+                    }
+                    for f in fills
+                ]
+            )
 
     with log_step(logger, "Persist paper-trading artifacts", level=logging.DEBUG):
         blotter_path, final_state_path = _append_paper_trading_rows(
@@ -80,12 +105,13 @@ def run_paper_trading_pipeline(
             step_result=step_result,
             previous_position=previous_position,
             fills_df=fills_df,
+            final_position=executed_target_position,
         )
 
     return PaperTradingResult(
         step=step_result,
         previous_position=previous_position,
-        target_position=int(step_result.target_position),
+        target_position=executed_target_position,
         fills_count=int(len(fills_df)),
         blotter_path=str(blotter_path),
         state_path=str(final_state_path),

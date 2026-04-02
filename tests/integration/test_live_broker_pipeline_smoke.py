@@ -91,3 +91,26 @@ def test_live_broker_pipeline_submits_order_when_enabled(monkeypatch, tmp_path: 
     assert result.order_sent is True
     assert result.status == "submitted"
     assert result.order_id == "oid-1"
+
+def test_live_broker_pipeline_blocks_order_on_risk_limits(monkeypatch, tmp_path: Path) -> None:
+    cfg = _base_cfg(tmp_path)
+    cfg["execution"]["risk_limits"] = {"enabled": True, "max_position": 0}
+
+    monkeypatch.setattr(
+        "src.pipelines.live_broker_pipeline.run_realtime_simulation_step",
+        lambda _: RealtimeSimulationStepResult(
+            timestamp="2024-01-01T00:00:00+00:00",
+            bid=100.0,
+            ask=101.0,
+            mid=100.5,
+            predicted_return=0.02,
+            target_position=1,
+            action="BUY",
+        ),
+    )
+
+    result = run_live_broker_pipeline(cfg, collect_quotes_first=False)
+
+    assert result.order_sent is False
+    assert result.status == "risk_blocked"
+    

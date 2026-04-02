@@ -34,6 +34,7 @@ def _append_paper_trading_rows(
     step_result: RealtimeSimulationStepResult,
     previous_position: int,
     fills_df: FrameLike,
+    final_position: int | None = None
 ) -> tuple[Path, Path]:
     blotter_path, fills_path, state_path = _paper_trading_paths(cfg)
 
@@ -45,6 +46,8 @@ def _append_paper_trading_rows(
     if not fills_df.empty and "fee" in fills_df.columns:
         fees_paid = float(fills_df["fee"].sum())
 
+    executed_position = int(step_result.target_position) if final_position is None else int(final_position)
+    
     blotter_row = pd.DataFrame(
         [
             {
@@ -55,7 +58,7 @@ def _append_paper_trading_rows(
                 "bid": step_result.bid,
                 "ask": step_result.ask,
                 "previous_position": previous_position,
-                "target_position": int(step_result.target_position),
+                "target_position": executed_position,
                 "fills_count": fills_count,
                 "notional_executed": notional,
                 "fees_paid": fees_paid,
@@ -76,7 +79,7 @@ def _append_paper_trading_rows(
 
     state_payload = {
         "last_timestamp": step_result.timestamp,
-        "last_position": int(step_result.target_position),
+        "last_position": executed_position,
     }
     state_path.write_text(json.dumps(state_payload, indent=2), encoding="utf-8")
 
