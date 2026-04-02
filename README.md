@@ -150,8 +150,8 @@ This is an **ongoing project**, actively being extended and refined. Planned and
 
 ### Runtime robustness & safety controls
  * [x] Data quality gates before inference (staleness, missing quotes, spread spikes, schema drift checks)
- * [in progress] Pre-trade risk limits (max position, max notional/day, max trades/hour, cooldown override)
- * [ ] Execution circuit breakers (auto-HOLD / fail-closed on critical errors)
+ * [x] Pre-trade risk limits (max position, max notional/day, max trades/hour, cooldown override)
+ * [in progress] Execution circuit breakers (auto-HOLD / fail-closed on critical errors)
  * [ ] Model confidence gate (only trade when score/confidence exceeds threshold; otherwise HOLD)
  * [ ] Shadow-vs-live divergence monitor (alert when expected vs actual fills/slippage deviates too much)
  * [ ] Runbook-style incident artifacts (structured error codes + deterministic replay bundle)
