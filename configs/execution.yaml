@@ -16,3 +16,9 @@ execution:
       max_trades_per_hour: 12
       cooldown_minutes: 5
       cooldown_override: false
+
+    circuit_breakers:
+      enabled: true
+      fail_closed: true
+      state_path: artifacts/execution/circuit_breaker_state.json
+  
