@@ -8,7 +8,9 @@ from .types import (OrderSide,
                     BitsoBrokerError,
                     BitsoOrderResponse,
                     LiveBrokerOrderResult,
-                    PreTradeRiskDecision)
+                    PreTradeRiskDecision,
+                    CircuitBreakerDecision,
+                    )
 
 from .fills import(
     fill_price_next_close,
@@ -23,13 +25,21 @@ from .fees import fee_proportional
 from .simulator import simulate_fills_from_target_position
 
 from .reporting.persist_shadow_artifacts import _persist_shadow_execution_artifacts
+
 from .reporting.paper_trading_store import(_paper_trading_paths,
                                            _load_previous_position,
                                            _append_paper_trading_rows
                                             )
+
 from .brokers.bitso_brokers import BitsoBrokerClient
 
 from .risk_limits import evaluate_pre_trade_risk_limits
+
+from .circuit_breakers import (evaluate_circuit_breaker, 
+                               record_circuit_breaker_failure, 
+                               clear_circuit_breaker, 
+                               hold_step,
+                               )
 
 __all__ = [
            "OrderSide", 
@@ -42,6 +52,8 @@ __all__ = [
            "BitsoBrokerError",
            "BitsoOrderResponse",
            "LiveBrokerOrderResult",
+           "PreTradeRiskDecision",
+           "CircuitBreakerDecision",
            "fill_price_next_close",
            "fill_price_mid",
            "fill_price_bid_ask",
@@ -54,6 +66,9 @@ __all__ = [
            "_load_previous_position",
            "_append_paper_trading_rows",
            "BitsoBrokerClient",
-           "PreTradeRiskDecision",
            "evaluate_pre_trade_risk_limits",
+           "evaluate_circuit_breaker",
+           "record_circuit_breaker_failure",
+           "clear_circuit_breaker",
+           "hold_step",
            ]
