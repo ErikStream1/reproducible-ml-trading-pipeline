@@ -5,7 +5,10 @@ import pandas as pd
 
 from src.execution import (simulate_fills_from_target_position, 
                            ShadowExecutionResult, 
-                           _persist_shadow_execution_artifacts)
+                           _persist_shadow_execution_artifacts,
+                           evaluate_circuit_breaker,
+                           record_circuit_breaker_failure,
+                           hold_step)
 
 from src.pipelines import (run_collect_quotes_pipeline, 
                            run_realtime_simulation_step)
@@ -31,13 +34,41 @@ def run_end_to_end_execution_shadow_pipeline(
     if collect_quotes_first is None:
         collect_quotes_first = execution_shadow_cfg.get("collect_quotes_first", False)
     
-    if collect_quotes_first:
-        with log_step(logger, "Collect quotes"):
-            run_collect_quotes_pipeline(cfg)
+    decision = evaluate_circuit_breaker(cfg)
+    if decision.enabled and decision.fail_closed and decision.is_open:
+        step_result = hold_step(target_position=0)
+        return ShadowExecutionResult(
+            step=step_result,
+            fills_count=0,
+            has_position_change=False,
+            artifact_dir=None,
+            status="circuit_breaker_open",
+            reason=f"fail-closed: open circuit breaker at {decision.state_path}",
+        )
 
-    with log_step(logger, "Realtime simulation step"):
-        step_result = run_realtime_simulation_step(cfg)
-
+    try:
+        if collect_quotes_first:
+            with log_step(logger, "Collect quotes"):
+                run_collect_quotes_pipeline(cfg)
+                
+        with log_step(logger, "Realtime simulation step"):
+                step_result = run_realtime_simulation_step(cfg)
+                
+    except Exception as exc:
+        if decision.enabled:
+            state_path = record_circuit_breaker_failure(cfg, pipeline="execution_shadow", exc=exc)
+            logger.exception("Shadow execution circuit breaker opened due to critical error")
+            step_result = hold_step(target_position=0)
+            return ShadowExecutionResult(
+                step=step_result,
+                fills_count=0,
+                has_position_change=False,
+                artifact_dir=None,
+                status="fail_closed_hold",
+                reason=f"{type(exc).__name__}: {exc}; state={state_path}",
+            )
+        raise    
+    
     with log_step(logger, "Shadow execution simulation"):
         prev_position = 0
         target_series = pd.Series([prev_position, step_result.target_position], dtype=int)
@@ -87,4 +118,6 @@ def run_end_to_end_execution_shadow_pipeline(
         fills_count=len(fills_df),
         has_position_change=step_result.target_position != 0,
         artifact_dir=None if output_path is None else str(output_path),
+        status="Ok",
+        reason=None,
     )

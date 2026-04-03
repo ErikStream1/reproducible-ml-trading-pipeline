@@ -10,6 +10,11 @@ def _base_cfg(tmp_path: Path) -> ConfigLike:
     return {
         "execution": {
             "qty": 0.001,
+            "circuit_breakers": {
+                "enabled": True,
+                "fail_closed": True,
+                "state_path": str(tmp_path / "execution" / "cb.json"),
+            },
         },
         "quotes": {"book": "btc_mxn"},
         "paper_trading": {
@@ -113,4 +118,20 @@ def test_live_broker_pipeline_blocks_order_on_risk_limits(monkeypatch, tmp_path:
 
     assert result.order_sent is False
     assert result.status == "risk_blocked"
-    
+
+def test_live_broker_pipeline_fail_closed_on_critical_error(monkeypatch, tmp_path: Path) -> None:
+    cfg = _base_cfg(tmp_path)
+
+    def _raise(_: ConfigLike) -> RealtimeSimulationStepResult:
+        raise RuntimeError("upstream failure")
+
+    monkeypatch.setattr(
+        "src.pipelines.live_broker_pipeline.run_realtime_simulation_step",
+        _raise,
+    )
+
+    result = run_live_broker_pipeline(cfg, collect_quotes_first=False)
+
+    assert result.order_sent is False
+    assert result.status == "fail_closed_hold"
+    assert result.action == "HOLD"

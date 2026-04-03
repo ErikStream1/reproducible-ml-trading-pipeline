@@ -17,6 +17,11 @@ def test_run_end_to_end_execution_shadow_pipeline_persists_artifacts(
             "qty": 0.001,
             "fees": {"rate": 0.001},
             "slippage": {"bps": 5, "vol_k": 0.0},
+            "circuit_breakers": {
+                "enabled": True,
+                "fail_closed": True,
+                "state_path": str(tmp_path / "execution" / "cb.json"),
+            },
         },
         "execution_shadow": {
             "artifacts": {
@@ -70,6 +75,10 @@ def test_run_end_to_end_execution_shadow_pipeline_without_shadow_config(
             "qty": 0.001,
             "fees": {"rate": 0.001},
             "slippage": {"bps": 5, "vol_k": 0.0},
+            "circuit_breakers": {
+                "enabled": True,
+                "fail_closed": True,
+            },
         }
     }
 
@@ -91,3 +100,35 @@ def test_run_end_to_end_execution_shadow_pipeline_without_shadow_config(
     assert result.fills_count == 1
     assert result.has_position_change is True
     assert result.artifact_dir is None
+
+def test_run_end_to_end_execution_shadow_pipeline_fail_closed_on_error(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    cfg = {
+        "execution": {
+            "fill_mode": "next_close",
+            "qty": 0.001,
+            "fees": {"rate": 0.001},
+            "slippage": {"bps": 5, "vol_k": 0.0},
+            "circuit_breakers": {
+                "enabled": True,
+                "fail_closed": True,
+                "state_path": str(tmp_path / "execution" / "cb.json"),
+            },
+        }
+    }
+
+    def _raise(_: dict) -> RealtimeSimulationStepResult:
+        raise RuntimeError("inference crash")
+
+    monkeypatch.setattr(
+        "src.pipelines.end_to_end_execution_pipeline.run_realtime_simulation_step",
+        _raise,
+    )
+
+    result = run_end_to_end_execution_shadow_pipeline(cfg, collect_quotes_first=False)
+
+    assert result.status == "fail_closed_hold"
+    assert result.step.action == "HOLD"
+    assert result.fills_count == 0

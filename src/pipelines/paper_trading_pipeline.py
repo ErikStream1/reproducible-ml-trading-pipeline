@@ -10,7 +10,10 @@ from src.execution import (PaperTradingResult,
                            _paper_trading_paths,
                            simulate_fills_from_target_position,
                            evaluate_pre_trade_risk_limits,
-                            )
+                           evaluate_circuit_breaker,
+                           record_circuit_breaker_failure,
+                           hold_step,
+                           )
 from src.pipelines import run_collect_quotes_pipeline, run_realtime_simulation_step
 from src.types import ConfigLike
 from src.utils import log_step
@@ -33,15 +36,46 @@ def run_paper_trading_pipeline(
     if collect_quotes_first is None:
         collect_quotes_first = bool(paper_cfg.get("collect_quotes_first", True))
 
-    if collect_quotes_first:
-        with log_step(logger, "Collect quotes"):
-            run_collect_quotes_pipeline(cfg)
-
-    with log_step(logger, "Realtime simulation step"):
-        step_result = run_realtime_simulation_step(cfg)
-
     blotter_path, _, state_path = _paper_trading_paths(cfg)
     previous_position = _load_previous_position(state_path)
+    decision = evaluate_circuit_breaker(cfg)
+
+    if decision.enabled and decision.fail_closed and decision.is_open:
+        step_result = hold_step(target_position=previous_position)
+        return PaperTradingResult(
+            step=step_result,
+            previous_position=previous_position,
+            target_position=previous_position,
+            fills_count=0,
+            blotter_path=str(blotter_path),
+            state_path=str(state_path),
+            status="circuit_breaker_open",
+            reason=f"fail-closed: open circuit breaker at {decision.state_path}",
+        )
+
+    try:
+        if collect_quotes_first:
+            with log_step(logger, "Collect quotes"):
+                run_collect_quotes_pipeline(cfg)
+
+        with log_step(logger, "Realtime simulation step"):
+            step_result = run_realtime_simulation_step(cfg)
+    except Exception as exc:
+        if decision.enabled:
+            state_path = record_circuit_breaker_failure(cfg, pipeline="paper_trading", exc=exc)
+            logger.exception("Paper trading circuit breaker opened due to critical error")
+            step_result = hold_step(target_position=previous_position)
+            return PaperTradingResult(
+                step=step_result,
+                previous_position=previous_position,
+                target_position=previous_position,
+                fills_count=0,
+                blotter_path=str(blotter_path),
+                state_path=str(state_path),
+                status="fail_closed_hold",
+                reason=f"{type(exc).__name__}: {exc}",
+            )
+        raise
 
     net_target = int(step_result.target_position) - previous_position
     qty = float(str(abs(net_target))) * float(str(cfg["execution"]["qty"]))
@@ -115,4 +149,6 @@ def run_paper_trading_pipeline(
         fills_count=int(len(fills_df)),
         blotter_path=str(blotter_path),
         state_path=str(final_state_path),
+        status = "Ok",
+        reason = None
     )

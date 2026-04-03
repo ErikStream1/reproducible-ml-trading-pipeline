@@ -6,7 +6,9 @@ from src.execution import (LiveBrokerOrderResult,
                            BitsoBrokerClient,
                            _load_previous_position,
                            _paper_trading_paths,
-                           evaluate_pre_trade_risk_limits)
+                           evaluate_pre_trade_risk_limits,
+                           evaluate_circuit_breaker,
+                           record_circuit_breaker_failure)
 from src.pipelines import (run_collect_quotes_pipeline,
                            run_realtime_simulation_step)
 
@@ -25,16 +27,51 @@ def run_live_broker_pipeline(
     if collect_quotes_first is None:
         collect_quotes_first = bool(live_cfg.get("collect_quotes_first", True))
 
-    if collect_quotes_first:
-        with log_step(logger, "Collect quotes"):
-            run_collect_quotes_pipeline(cfg)
-
-    with log_step(logger, "Realtime simulation step"):
-        step_result = run_realtime_simulation_step(cfg)
-
     blotter_path, _, state_path = _paper_trading_paths(cfg)
     previous_position = _load_previous_position(state_path)
+    decision = evaluate_circuit_breaker(cfg)
 
+    if decision.enabled and decision.fail_closed and decision.is_open:
+        return LiveBrokerOrderResult(
+            timestamp="",
+            action="HOLD",
+            target_position=previous_position,
+            previous_position=previous_position,
+            order_sent=False,
+            side=None,
+            major=None,
+            order_id=None,
+            status="circuit_breaker_open",
+            payload={"reason": f"fail-closed: open circuit breaker at {decision.state_path}"},
+        )
+
+    try:
+        if collect_quotes_first:
+            with log_step(logger, "Collect quotes"):
+                run_collect_quotes_pipeline(cfg)
+
+        with log_step(logger, "Realtime simulation step"):
+            step_result = run_realtime_simulation_step(cfg)
+    except Exception as exc:
+        if decision.enabled:
+            state_path = record_circuit_breaker_failure(cfg, pipeline="live_broker", exc=exc)
+            logger.exception("Live broker circuit breaker opened due to critical error")
+            return LiveBrokerOrderResult(
+                timestamp="",
+                action="HOLD",
+                target_position=previous_position,
+                previous_position=previous_position,
+                order_sent=False,
+                side=None,
+                major=None,
+                order_id=None,
+                status="fail_closed_hold",
+                payload={
+                    "reason": f"{type(exc).__name__}: {exc}",
+                    "circuit_breaker_state_path": str(state_path),
+                },
+            )
+        raise
     net_target = int(step_result.target_position) - previous_position
     if net_target == 0:
         return LiveBrokerOrderResult(
