@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import Any, TypeAlias, Sequence
+from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum
 from src.types import SeriesLike, IntArray, payloadLike
@@ -26,6 +27,8 @@ class ShadowExecutionResult:
     fills_count: int
     has_position_change: bool
     artifact_dir: str | None
+    status: str = "Ok"
+    reason: str | None = None
 
 @dataclass(frozen=True)
 class RealtimeSimulationStepResult:
@@ -45,6 +48,8 @@ class PaperTradingResult:
     fills_count: int
     blotter_path: str
     state_path: str
+    status: str = "Ok"
+    reason: str | None = None
     
 class BitsoBrokerError(RuntimeError):
     """Raised when an authenticated bitso broker request fails."""
@@ -73,3 +78,10 @@ class PreTradeRiskDecision:
     allowed: bool
     reasons: tuple[str, ...]
     details: dict[str, float | int | str | bool | None]
+    
+@dataclass(frozen=True)
+class CircuitBreakerDecision:
+    enabled: bool
+    fail_closed: bool
+    is_open: bool
+    state_path: Path
