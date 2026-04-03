@@ -25,8 +25,8 @@ class BitsoBrokerClient:
         nonce = str(int(time.time() * 1_000_000))
         message = f"{nonce}{method.upper()}{request_path}{payload_str}"
         signature = hmac.new(
-            self.api_secret.encode("utf-8"),
-            message.encode("utf-8"),
+            self.api_secret.encode(),
+            message.encode(),
             hashlib.sha256,
         ).hexdigest()
         return {"Authorization": f"Bitso {self.api_key}:{nonce}:{signature}"}
