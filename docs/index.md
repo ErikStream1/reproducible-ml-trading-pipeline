@@ -14,3 +14,5 @@
  - [Execution module](execution.md)
  - [Backtest module](backtest.md)
  - [Pipelines](pipelines.md)
+ - [Quotes & quality gates](quotes_and_quality.md)
+ - [Runtime safety controls](runtime_safety.md)

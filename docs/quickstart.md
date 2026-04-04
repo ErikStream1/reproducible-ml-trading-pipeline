@@ -57,3 +57,7 @@ Typical artifacts locations:
     * `logs printed to stdout`
     * `logs/pipeline.log` (persisted file)
 
+## Documentation map
+- `docs/index.md` entrypoint
+- `docs/quotes_and_quality.md` for quote ingestion contracts and quality gates
+- `docs/runtime_safety.md` for risk limits and circuit-breaker operations
