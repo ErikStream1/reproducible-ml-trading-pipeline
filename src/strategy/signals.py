@@ -2,12 +2,15 @@ from __future__ import annotations
 from src.types import VectorLike,SeriesLike, ConfigLike, Prediction
 import pandas as pd
 
-from src.strategy import (apply_vol_filter, apply_cooldown)
+from src.strategy import (apply_vol_filter, 
+                          apply_cooldown, 
+                          apply_confidence_gate)
 
 def threshold_signal(
     cfg: ConfigLike,
     pred_return: Prediction,
     volatility: VectorLike | None = None,
+    confidence: VectorLike | None = None,
 )->SeriesLike:
     
     strategy_cfg = cfg["strategy"]
@@ -19,6 +22,9 @@ def threshold_signal(
     enter_threshold = strategy_cfg.get("enter_threshold", 0.0)
     exit_threshold = strategy_cfg.get("exit_threshold", 0.0)
     cooldown_bars = strategy_cfg.get("cooldown_bars", 0.0)
+    confidence_gate_cfg = strategy_cfg.get("confidence_gate", {})
+    confidence_gate_enabled = confidence_gate_cfg.get("enabled", False)
+    confidence_threshold = confidence_gate_cfg.get("threshold")
     
     volatility_filter_cfg = strategy_cfg["volatility_filter"]
     
@@ -52,6 +58,13 @@ def threshold_signal(
         desired.loc[pred_return < -enter_threshold] = -1
     
     desired = apply_vol_filter(desired_position=desired, volatility=volatility, vol_max=max_vol)
+    if confidence_gate_enabled:
+        confidence_series = confidence if confidence is not None else pred_return.abs()
+        desired = apply_confidence_gate(
+            desired_position=desired,
+            confidence=confidence_series,
+            threshold=confidence_threshold,
+        )
     desired = apply_cooldown(target_position=desired, cooldown_bars=cooldown_bars)
     
     return desired

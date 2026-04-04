@@ -1,5 +1,6 @@
 from .filters import (apply_vol_filter,
-                      apply_cooldown)
+                      apply_cooldown,
+                      apply_confidence_gate)
 
 from .signals import threshold_signal
 
@@ -10,4 +11,5 @@ __all__ = [
     "apply_cooldown",
     "threshold_signal",
     "target_qty_from_fixed_notional",
+    "apply_confidence_gate",
     ]
