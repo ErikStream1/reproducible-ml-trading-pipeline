@@ -19,6 +19,12 @@ Common rule:
 
 ## Filters
 
+### Model confidence gate
+If enabled, entries are blocked unless confidence is above `threshold`.
+
+- Default confidence source is `abs(pred_return)` when no explicit confidence score is provided.
+- Failing the gate forces target position to `0` (`HOLD`).
+
 ### Cooldown
 After an action (enter/exit), strategy may enforce `cooldown_bars` where new entries are blocked.
 

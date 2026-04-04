@@ -177,6 +177,10 @@ strategy:
         enabled: true
         max_vol: 0.05 # decimal units
     
+    confidence_gate:
+        enabled: true
+        threshold: 0.002 # minimum model score/confidence to allow trade
+        
     sizing:
         target_notional: 1000.0 # quote currency (e.g. USD for btc_usd)
         min_qty: 0.0001
