@@ -276,3 +276,64 @@ def test_run_realtime_simulation_step_raises_on_stale_quotes(
 
     with pytest.raises(ValueError, match="stale latest quote"):
         run_realtime_simulation_step(cfg)
+        
+def test_run_realtime_simulation_step_holds_when_confidence_gate_blocks(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    cfg = _base_cfg(tmp_path)
+    cfg["strategy"]["confidence_gate"] = {"enabled": True, "threshold": 0.02}
+    quotes_cfg = cfg["quotes"]
+    quotes_out_dir = Path(quotes_cfg["out_dir"])
+    model_path_ = Path(cfg["inference"]["artifacts"]["model_path"])
+    quotes_df = pd.DataFrame(
+        {
+            "ts_exchange": pd.date_range("2024-01-01", periods=6, freq="min", tz="UTC"),
+            "bid": [100, 101, 102, 103, 104, 105],
+            "ask": [101, 102, 103, 104, 105, 106],
+            "mid": [100.5, 101.5, 102.5, 103.5, 104.5, 105.5],
+        }
+    )
+    historic_df = pd.DataFrame(
+        {
+            "Date": pd.date_range("2024-01-01", periods=6, freq="D"),
+            "Open": [90, 91, 92, 93, 94, 95],
+            "High": [91, 92, 93, 94, 95, 96],
+            "Low": [89, 90, 91, 92, 93, 94],
+            "Close": [90.5, 91.5, 92.5, 93.5, 94.5, 95.5],
+            "Volume": [1000, 1005, 1010, 1015, 1020, 1025],
+        }
+    )
+    dummy_model = DummyModel(features=["bid", "ask", "Close"])
+    model_path_.parent.mkdir(parents=True, exist_ok=True)
+    dummy_model.save(model_path_)
+
+    book = quotes_cfg["book"]
+    date = "2024-01-01"
+    data_now = date + "000000"
+    part_dir = Path(f"{quotes_out_dir}/book={book}/date={date}")
+    part_dir.mkdir(parents=True, exist_ok=True)
+    output_path = part_dir / f"quotes_{data_now}.parquet"
+    pd.DataFrame.to_parquet(quotes_df.reset_index(drop=True), path=output_path, index=False)
+
+    monkeypatch.setattr(
+        "src.data.quotes.quotes_resolver.load_quotes",
+        lambda quotes_out_dir, book: QuoteSeries(df=quotes_df),
+    )
+    monkeypatch.setattr(
+        "src.pipelines.realtime_simulation_pipeline.run_data_pipeline",
+        lambda cfg: historic_df,
+    )
+    monkeypatch.setattr(
+        "src.data.quotes.quality_gates.pd.Timestamp.now",
+        lambda tz: pd.Timestamp(2024, 1, 1, tz="UTC"),
+    )
+    monkeypatch.setattr(
+        "src.pipelines.realtime_simulation_pipeline._load_model",
+        lambda model_path: DummyModel.load(path=model_path_),
+    )
+
+    result = run_realtime_simulation_step(cfg)
+
+    assert result.target_position == 0
+    assert result.action == "HOLD"
