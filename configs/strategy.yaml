@@ -10,6 +10,10 @@ strategy:
         enabled: true
         max_vol: 0.05
     
+    confidence_gates:
+        enabled: true
+        threshold: 0.002
+
     sizing:
         target_notional: 1000.0
         min_qty: 0.0001
