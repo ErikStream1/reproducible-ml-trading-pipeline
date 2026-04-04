@@ -180,6 +180,15 @@ Training runs now persist experiment bundles under `artifacts/experiments/<run_i
 * `feature_sample.csv` (first 200 rows of features for quick debugging)
 
 Enable/disable from `training.experiments.enabled` in `configs/training.yaml`.
+
+## Documentation
+
+Project docs are organized under `docs/` with `docs/index.md` as the entrypoint.
+
+Additional operational docs:
+- `docs/quotes_and_quality.md` for real-time quote ingestion contracts and quality gates.
+- `docs/runtime_safety.md` for pre-trade risk limits and circuit-breaker fail-closed behavior.
+
 ## Installation
 
 ```bash
