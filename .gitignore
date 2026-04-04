@@ -1,9 +1,10 @@
 #local
 configs/local_live_broker.yaml
 
-
+main.py
 notebooks/*.ipynb
 notes.txt
+
 # Data
 *.csv
 *.parquet
