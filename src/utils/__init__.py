@@ -6,7 +6,7 @@ from .logging_utils.logging_utils import (log_step,
 from .experiments_artifacts import(ExperimentRun,
                                    start_experiment_run,
                                    save_experiment_artifacts)
-
+from .file_readers import read
 
 __all__ = ["deep_merge",
            "make_fake_ohlcv",
@@ -15,4 +15,5 @@ __all__ = ["deep_merge",
            "log_drop",
            "ExperimentRun",
            "start_experiment_run",
-           "save_experiment_artifacts"]
+           "save_experiment_artifacts",
+           "read"]
