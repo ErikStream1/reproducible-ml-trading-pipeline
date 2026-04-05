@@ -31,6 +31,7 @@ Typical files:
     * `backtest.yaml`
     * `execution_shadow.yaml`
     * `paper_trading.yaml`
+    * `divergence_monitor.yaml`
 * Runtime:
     * `logging.yaml`
 

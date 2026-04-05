@@ -153,8 +153,8 @@ This is an **ongoing project**, actively being extended and refined. Planned and
  * [x] Pre-trade risk limits (max position, max notional/day, max trades/hour, cooldown override)
  * [x] Execution circuit breakers (auto-HOLD / fail-closed on critical errors)
  * [x] Model confidence gate (only trade when score/confidence exceeds threshold; otherwise HOLD)
- * [in progress] Shadow-vs-live divergence monitor (alert when expected vs actual fills/slippage deviates too much)
- * [ ] Runbook-style incident artifacts (structured error codes + deterministic replay bundle)
+ * [x] Shadow-vs-live divergence monitor (alert when expected vs actual fills/slippage deviates too much)
+ * [in progress] Runbook-style incident artifacts (structured error codes + deterministic replay bundle)
 
 
 ---
@@ -169,6 +169,17 @@ A new pipeline step can now simulate the latest trading decision from collected 
 * Optionally stores step artifacts under `artifacts/realtime_simulation/`
 
 Configure this behavior in `configs/realtime_simulation.yaml`.
+
+### Shadow-vs-live divergence monitor
+
+A configurable divergence monitor now compares expected shadow fills vs actual live fills and emits an alert when behavior drifts beyond thresholds.
+
+* Inputs: `artifacts/execution_shadow/fills.csv` vs `artifacts/live_broker/fills.csv`
+* Metrics: fill count delta, notional % delta, avg fill price delta (bps), fee delta (bps)
+* Artifacts: `artifacts/divergence_monitor/divergence_report.json` + `divergence_alert.json`
+
+Configure in `configs/divergence_monitor.yaml` and run via `run_shadow_live_divergence_monitor_pipeline(...)`.
+
 ### Reproducible experiments and artifacts
 
 Training runs now persist experiment bundles under `artifacts/experiments/<run_id>/` containing:

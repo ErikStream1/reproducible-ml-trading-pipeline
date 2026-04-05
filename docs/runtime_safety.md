@@ -74,3 +74,18 @@ execution:
     fail_closed: true
     state_path: artifacts/paper_trading/circuit_breaker_state.json
 ```
+
+## Shadow-vs-live divergence monitor
+
+Implemented in `src/execution/divergence_monitor.py` and exposed via `run_shadow_live_divergence_monitor_pipeline(...)`.
+
+It compares expected (shadow) vs actual (live) fills and raises an alert when any configured threshold is breached:
+- fill-count divergence
+- notional divergence (%)
+- average fill-price divergence (bps)
+- fee divergence (bps)
+
+Recommended usage:
+1. Persist shadow fills from end-to-end execution (`artifacts/execution_shadow/fills.csv`).
+2. Persist/export live fills to `artifacts/live_broker/fills.csv` with at least `qty` and `price` columns (optional `fee`).
+3. Run the divergence monitor after each live execution batch and review alert artifacts.

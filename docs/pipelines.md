@@ -17,6 +17,7 @@ Implemented pipelines:
 -   `run_end_to_end_execution_shadow_pipeline`
 -   `run_paper_trading_pipeline`
 -   `run_backtest_pipeline`
+-   `run_shadow_live_divergence_monitor_pipeline`
 
 ------------------------------------------------------------------------
 
@@ -350,3 +351,31 @@ Without changing the structure of other docs, these are the key consistency note
 - `local_live_broker.*`
 - `execution.qty`
 - `quotes.book`
+
+------------------------------------------------------------------------
+
+## 12) Shadow-vs-live divergence monitor
+
+**Function**: `run_shadow_live_divergence_monitor_pipeline(cfg, expected_fills_path=None, actual_fills_path=None)`
+
+**File**: `src/pipelines/divergence_monitor_pipeline.py`
+
+### Flow
+
+1. Loads expected fills (shadow) and actual fills (live) CSVs.
+2. Aggregates both sides into count, notional, avg fill price, and fee bps.
+3. Computes divergence metrics and compares against thresholds.
+4. Emits monitor artifacts (`divergence_report.json`, `divergence_alert.json`) when output dir is configured.
+5. Returns a structured decision payload with `alert_triggered` and reasons.
+
+### Key config inputs
+
+- `divergence_monitor.inputs.expected_fills_path`
+- `divergence_monitor.inputs.actual_fills_path`
+- `divergence_monitor.thresholds.*`
+- `divergence_monitor.artifacts.*`
+
+### Outputs
+
+- `DivergenceMonitorResult`
+- Optional JSON artifacts under `divergence_monitor.artifacts.output_dir`

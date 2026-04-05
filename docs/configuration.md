@@ -252,6 +252,19 @@ Key fields:
 - `paper_trading.artifacts.state_filename`: Persisted position-state JSON filename.
 
 ---
+### `divergence_monitor.yaml`
+**Purpose:** compare shadow expected fills against live fills and alert on abnormal execution drift.
+
+Key fields:
+- `divergence_monitor.inputs.expected_fills_path`: Shadow-mode fills CSV.
+- `divergence_monitor.inputs.actual_fills_path`: Live fills CSV exported from broker runtime.
+- `divergence_monitor.thresholds.max_fill_count_diff`: Max absolute fill-count difference before alert.
+- `divergence_monitor.thresholds.max_notional_pct_diff`: Max relative notional deviation before alert.
+- `divergence_monitor.thresholds.max_avg_fill_price_bps_diff`: Max avg fill-price divergence (bps).
+- `divergence_monitor.thresholds.max_fee_bps_diff`: Max fee divergence (bps).
+- `divergence_monitor.artifacts.output_dir`: Where monitor report/alert JSON files are written.
+---
+
 ### `logging.yaml`
 **Purpose:** centralized runtime logging behavior.
 
