@@ -1,0 +1,13 @@
+divergence_monitor:
+  inputs:
+    expected_fills_path: artifacts/execution_shadow/fills.csv
+    actual_fills_path: artifacts/live_broker/fills.csv
+  thresholds:
+    max_fill_count_diff: 1
+    max_notional_pct_diff: 0.20
+    max_avg_fill_price_bps_diff: 20.0
+    max_fee_bps_diff: 10.0
+  artifacts:
+    output_dir: artifacts/divergence_monitor
+    report_filename: divergence_report.json
+    alert_filename: divergence_alert.json
