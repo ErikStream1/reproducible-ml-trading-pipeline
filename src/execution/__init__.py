@@ -10,6 +10,9 @@ from .types import (OrderSide,
                     LiveBrokerOrderResult,
                     PreTradeRiskDecision,
                     CircuitBreakerDecision,
+                    FillAggregate,
+                    DivergenceMetrics,
+                    DivergenceMonitorResult,
                     )
 
 from .fills import(
@@ -41,6 +44,8 @@ from .circuit_breakers import (evaluate_circuit_breaker,
                                hold_step,
                                )
 
+from .divergence_monitor import evaluate_shadow_live_divergence
+
 __all__ = [
            "OrderSide", 
            "Fill",
@@ -71,4 +76,8 @@ __all__ = [
            "record_circuit_breaker_failure",
            "clear_circuit_breaker",
            "hold_step",
+           "FillAggregate",
+            "DivergenceMetrics",
+            "DivergenceMonitorResult",
+            "evaluate_shadow_live_divergence",
            ]

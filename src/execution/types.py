@@ -85,3 +85,31 @@ class CircuitBreakerDecision:
     fail_closed: bool
     is_open: bool
     state_path: Path
+
+@dataclass(frozen=True)
+class FillAggregate:
+    fills_count: int
+    notional: float
+    avg_fill_price: float
+    fee_paid: float
+    fee_bps: float
+
+
+@dataclass(frozen=True)
+class DivergenceMetrics:
+    fill_count_abs_diff: int
+    notional_pct_diff: float
+    avg_fill_price_bps_diff: float
+    fee_bps_diff: float
+
+
+@dataclass(frozen=True)
+class DivergenceMonitorResult:
+    alert_triggered: bool
+    reasons: tuple[str, ...]
+    expected: FillAggregate
+    actual: FillAggregate
+    metrics: DivergenceMetrics
+    expected_path: str
+    actual_path: str
+    output_path: str | None
