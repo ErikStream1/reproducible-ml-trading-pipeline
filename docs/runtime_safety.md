@@ -89,3 +89,13 @@ Recommended usage:
 1. Persist shadow fills from end-to-end execution (`artifacts/execution_shadow/fills.csv`).
 2. Persist/export live fills to `artifacts/live_broker/fills.csv` with at least `qty` and `price` columns (optional `fee`).
 3. Run the divergence monitor after each live execution batch and review alert artifacts.
+
+## Incident artifacts and replay bundles
+
+Fail-closed runtime exceptions now persist structured incident artifacts.
+
+- Structured error code is assigned per pipeline (`INC-PAPER-001`, `INC-SHADOW-001`, `INC-LIVE-001`).
+- Circuit breaker state now includes `error_code` and `incident_bundle_path`.
+- Deterministic replay bundles are written under `incident_artifacts.output_dir` (default `artifacts/incidents`).
+
+See `docs/incident_runbook.md` for operational and replay workflow details.

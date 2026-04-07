@@ -154,8 +154,7 @@ This is an **ongoing project**, actively being extended and refined. Planned and
  * [x] Execution circuit breakers (auto-HOLD / fail-closed on critical errors)
  * [x] Model confidence gate (only trade when score/confidence exceeds threshold; otherwise HOLD)
  * [x] Shadow-vs-live divergence monitor (alert when expected vs actual fills/slippage deviates too much)
- * [in progress] Runbook-style incident artifacts (structured error codes + deterministic replay bundle)
-
+ * [x] Runbook-style incident artifacts (structured error codes + deterministic replay bundle)
 
 ---
 ### Real-time simulation step
@@ -169,6 +168,17 @@ A new pipeline step can now simulate the latest trading decision from collected 
 * Optionally stores step artifacts under `artifacts/realtime_simulation/`
 
 Configure this behavior in `configs/realtime_simulation.yaml`.
+
+### Runbook-style incident artifacts
+
+Fail-closed execution paths now emit structured incident error codes and write deterministic replay bundles for incident triage.
+
+* Error codes: `INC-PAPER-001`, `INC-SHADOW-001`, `INC-LIVE-001`
+* Replay bundle root: `artifacts/incidents/<incident_id>/`
+* Bundle contents: manifest, config snapshot, context, traceback, replay instructions
+* Circuit breaker state now includes `error_code` and `incident_bundle_path`
+
+Manual bundle generation is available via `persist_incident_replay_bundle(...)` in `src.execution`.
 
 ### Shadow-vs-live divergence monitor
 
@@ -199,6 +209,7 @@ Project docs are organized under `docs/` with `docs/index.md` as the entrypoint.
 Additional operational docs:
 - `docs/quotes_and_quality.md` for real-time quote ingestion contracts and quality gates.
 - `docs/runtime_safety.md` for pre-trade risk limits and circuit-breaker fail-closed behavior.
+- `docs/incident_runbook.md` for structured incident codes and replay bundle workflow.
 
 ## Installation
 
