@@ -113,3 +113,16 @@ class DivergenceMonitorResult:
     expected_path: str
     actual_path: str
     output_path: str | None
+    
+@dataclass(frozen=True)
+class IncidentCode:
+    code: str
+    category: str
+    description: str
+
+
+@dataclass(frozen=True)
+class IncidentArtifactResult:
+    incident_id: str
+    error_code: str
+    output_dir: str

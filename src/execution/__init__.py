@@ -13,6 +13,8 @@ from .types import (OrderSide,
                     FillAggregate,
                     DivergenceMetrics,
                     DivergenceMonitorResult,
+                    IncidentCode,
+                    IncidentArtifactResult,
                     )
 
 from .fills import(
@@ -80,4 +82,6 @@ __all__ = [
             "DivergenceMetrics",
             "DivergenceMonitorResult",
             "evaluate_shadow_live_divergence",
+            "IncidentCode",
+            "IncidentArtifactResult"
            ]
