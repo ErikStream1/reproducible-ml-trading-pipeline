@@ -22,3 +22,5 @@ execution:
       fail_closed: true
       state_path: artifacts/execution/circuit_breaker_state.json
   
+    incident_artifacts:
+      output_dir: artifacts/incidents
