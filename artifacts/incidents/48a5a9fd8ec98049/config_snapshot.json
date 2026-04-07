@@ -1,0 +1,30 @@
+{
+  "execution": {
+    "circuit_breakers": {
+      "enabled": true,
+      "fail_closed": true,
+      "state_path": "C:\\Users\\Erik Ernesto\\AppData\\Local\\Temp\\pytest-of-Erik Ernesto\\pytest-465\\test_live_broker_pipeline_fail0\\execution\\cb.json"
+    },
+    "qty": 0.001
+  },
+  "live_broker": {
+    "client": {
+      "base_url": "https://api.bitso.com/v3",
+      "timeout_s": 10.0
+    },
+    "dry_run": true
+  },
+  "local_live_broker": {
+    "api_key": "k",
+    "api_secret": "s"
+  },
+  "paper_trading": {
+    "artifacts": {
+      "output_dir": "C:\\Users\\Erik Ernesto\\AppData\\Local\\Temp\\pytest-of-Erik Ernesto\\pytest-465\\test_live_broker_pipeline_fail0\\paper_trading",
+      "state_filename": "state.json"
+    }
+  },
+  "quotes": {
+    "book": "btc_mxn"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "execution": {
+    "circuit_breakers": {
+      "enabled": true,
+      "fail_closed": true,
+      "state_path": "C:\\Users\\Erik Ernesto\\AppData\\Local\\Temp\\pytest-of-Erik Ernesto\\pytest-464\\test_run_end_to_end_execution_1\\execution\\cb.json"
+    },
+    "fees": {
+      "rate": 0.001
+    },
+    "fill_mode": "next_close",
+    "qty": 0.001,
+    "slippage": {
+      "bps": 5,
+      "vol_k": 0.0
+    }
+  }
+}

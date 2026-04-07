@@ -132,3 +132,6 @@ def test_run_end_to_end_execution_shadow_pipeline_fail_closed_on_error(
     assert result.status == "fail_closed_hold"
     assert result.step.action == "HOLD"
     assert result.fills_count == 0
+    cb_state = json.loads((tmp_path / "execution" / "cb.json").read_text(encoding="utf-8"))
+    assert cb_state["error_code"] == "INC-SHADOW-001"
+    assert Path(cb_state["incident_bundle_path"]).exists()

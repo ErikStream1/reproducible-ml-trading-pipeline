@@ -13,6 +13,7 @@ from src.execution import (PaperTradingResult,
                            evaluate_circuit_breaker,
                            record_circuit_breaker_failure,
                            hold_step,
+                           persist_incident_replay_bundle,
                            )
 from src.pipelines import run_collect_quotes_pipeline, run_realtime_simulation_step
 from src.types import ConfigLike
@@ -62,7 +63,19 @@ def run_paper_trading_pipeline(
             step_result = run_realtime_simulation_step(cfg)
     except Exception as exc:
         if decision.enabled:
-            state_path = record_circuit_breaker_failure(cfg, pipeline="paper_trading", exc=exc)
+            incident = persist_incident_replay_bundle(
+            cfg=cfg,
+            pipeline="paper_trading",
+            exc=exc,
+            context={"previous_position": previous_position},
+            )
+            state_path = record_circuit_breaker_failure(
+            cfg,
+            pipeline="paper_trading",
+            exc=exc,
+            error_code=incident.error_code,
+            incident_bundle_path=incident.output_dir,
+            )
             logger.exception("Paper trading circuit breaker opened due to critical error")
             step_result = hold_step(target_position=previous_position)
             return PaperTradingResult(
@@ -73,7 +86,7 @@ def run_paper_trading_pipeline(
                 blotter_path=str(blotter_path),
                 state_path=str(state_path),
                 status="fail_closed_hold",
-                reason=f"{type(exc).__name__}: {exc}",
+                reason=f"{incident.error_code} | {type(exc).__name__}: {exc}",
             )
         raise
 

@@ -8,7 +8,10 @@ from src.execution import (simulate_fills_from_target_position,
                            _persist_shadow_execution_artifacts,
                            evaluate_circuit_breaker,
                            record_circuit_breaker_failure,
-                           hold_step)
+                           hold_step,
+                           incident_code_for_pipeline,
+                           persist_incident_replay_bundle
+                           )
 
 from src.pipelines import (run_collect_quotes_pipeline, 
                            run_realtime_simulation_step)
@@ -56,7 +59,19 @@ def run_end_to_end_execution_shadow_pipeline(
                 
     except Exception as exc:
         if decision.enabled:
-            state_path = record_circuit_breaker_failure(cfg, pipeline="execution_shadow", exc=exc)
+            incident = persist_incident_replay_bundle(
+                cfg=cfg,
+                pipeline="execution_shadow",
+                exc=exc,
+                context={"previous_position": 0},
+            )
+            state_path = record_circuit_breaker_failure(
+                cfg,
+                pipeline="execution_shadow",
+                exc=exc,
+                error_code=incident.error_code,
+                incident_bundle_path=incident.output_dir,
+            )
             logger.exception("Shadow execution circuit breaker opened due to critical error")
             step_result = hold_step(target_position=0)
             return ShadowExecutionResult(
@@ -65,7 +80,7 @@ def run_end_to_end_execution_shadow_pipeline(
                 has_position_change=False,
                 artifact_dir=None,
                 status="fail_closed_hold",
-                reason=f"{type(exc).__name__}: {exc}; state={state_path}",
+                reason=f"{incident.error_code} | {type(exc).__name__}: {exc}; state={state_path}",
             )
         raise    
     

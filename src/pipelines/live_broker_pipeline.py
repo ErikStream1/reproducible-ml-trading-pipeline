@@ -8,7 +8,9 @@ from src.execution import (LiveBrokerOrderResult,
                            _paper_trading_paths,
                            evaluate_pre_trade_risk_limits,
                            evaluate_circuit_breaker,
-                           record_circuit_breaker_failure)
+                           record_circuit_breaker_failure,
+                           persist_incident_replay_bundle)
+
 from src.pipelines import (run_collect_quotes_pipeline,
                            run_realtime_simulation_step)
 
@@ -54,7 +56,20 @@ def run_live_broker_pipeline(
             step_result = run_realtime_simulation_step(cfg)
     except Exception as exc:
         if decision.enabled:
-            state_path = record_circuit_breaker_failure(cfg, pipeline="live_broker", exc=exc)
+            incident = persist_incident_replay_bundle(
+                cfg=cfg,
+                pipeline="live_broker",
+                exc=exc,
+                context={"previous_position": previous_position},
+            )
+            state_path = record_circuit_breaker_failure(
+                cfg,
+                pipeline="live_broker",
+                exc=exc,
+                error_code=incident.error_code,
+                incident_bundle_path=incident.output_dir,
+            )
+            
             logger.exception("Live broker circuit breaker opened due to critical error")
             return LiveBrokerOrderResult(
                 timestamp="",
@@ -67,7 +82,9 @@ def run_live_broker_pipeline(
                 order_id=None,
                 status="fail_closed_hold",
                 payload={
-                    "reason": f"{type(exc).__name__}: {exc}",
+                    "reason": f"{incident.error_code} | {type(exc).__name__}: {exc}",
+                    "error_code": incident.error_code,
+                    "incident_bundle_path": incident.output_dir,
                     "circuit_breaker_state_path": str(state_path),
                 },
             )

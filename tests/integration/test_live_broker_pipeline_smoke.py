@@ -1,10 +1,10 @@
 from __future__ import annotations
-
+import json
 from pathlib import Path
+
 from src.types import ConfigLike
 from src.execution import RealtimeSimulationStepResult
 from src.pipelines import run_live_broker_pipeline
-
 
 def _base_cfg(tmp_path: Path) -> ConfigLike:
     return {
@@ -135,3 +135,8 @@ def test_live_broker_pipeline_fail_closed_on_critical_error(monkeypatch, tmp_pat
     assert result.order_sent is False
     assert result.status == "fail_closed_hold"
     assert result.action == "HOLD"
+    assert result.payload["error_code"] == "INC-LIVE-001"
+
+    cb_state = json.loads((tmp_path / "execution" / "cb.json").read_text(encoding="utf-8"))
+    assert cb_state["error_code"] == "INC-LIVE-001"
+    assert Path(cb_state["incident_bundle_path"]).exists()

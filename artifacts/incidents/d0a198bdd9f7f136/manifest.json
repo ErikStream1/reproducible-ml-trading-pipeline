@@ -1,0 +1,19 @@
+{
+  "bundle_version": "v1",
+  "config_hash": "2eb39d132c8f1d2e72504eb93535748f468cc9f01e6c6efa503bce5aec8d4187",
+  "error_category": "runtime_pipeline_failure",
+  "error_code": "INC-SHADOW-001",
+  "error_description": "Shadow execution pipeline failed and switched to fail-closed HOLD.",
+  "exception_message": "inference crash",
+  "exception_type": "RuntimeError",
+  "files": [
+    "manifest.json",
+    "config_snapshot.json",
+    "context.json",
+    "traceback.txt",
+    "replay_instructions.md"
+  ],
+  "incident_id": "d0a198bdd9f7f136",
+  "opened_at": "2026-04-07T21:31:09.580983+00:00",
+  "pipeline": "execution_shadow"
+}

@@ -197,3 +197,7 @@ def test_paper_trading_pipeline_fail_closed_on_critical_error(
     assert result.step.action == "HOLD"
     assert result.target_position == 0
     assert result.fills_count == 0
+    
+    cb_state = json.loads((tmp_path / "execution" / "cb.json").read_text(encoding="utf-8"))
+    assert cb_state["error_code"] == "INC-PAPER-001"
+    assert Path(cb_state["incident_bundle_path"]).exists()

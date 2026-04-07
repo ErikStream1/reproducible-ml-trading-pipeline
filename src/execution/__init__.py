@@ -48,6 +48,8 @@ from .circuit_breakers import (evaluate_circuit_breaker,
 
 from .divergence_monitor import evaluate_shadow_live_divergence
 
+from .incident_artifacts import incident_code_for_pipeline, persist_incident_replay_bundle
+
 __all__ = [
            "OrderSide", 
            "Fill",
@@ -60,7 +62,12 @@ __all__ = [
            "BitsoOrderResponse",
            "LiveBrokerOrderResult",
            "PreTradeRiskDecision",
+           "DivergenceMetrics",
+           "DivergenceMonitorResult",
+           "FillAggregate",
            "CircuitBreakerDecision",
+           "IncidentCode",
+           "IncidentArtifactResult",
            "fill_price_next_close",
            "fill_price_mid",
            "fill_price_bid_ask",
@@ -78,10 +85,7 @@ __all__ = [
            "record_circuit_breaker_failure",
            "clear_circuit_breaker",
            "hold_step",
-           "FillAggregate",
-            "DivergenceMetrics",
-            "DivergenceMonitorResult",
-            "evaluate_shadow_live_divergence",
-            "IncidentCode",
-            "IncidentArtifactResult"
+           "evaluate_shadow_live_divergence",
+           "incident_code_for_pipeline",
+           "persist_incident_replay_bundle",
            ]

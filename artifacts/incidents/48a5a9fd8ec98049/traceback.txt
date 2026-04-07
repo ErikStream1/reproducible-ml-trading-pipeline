@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "C:\Users\Erik Ernesto\Downloads\bitcoin_pi\src\pipelines\live_broker_pipeline.py", line 56, in run_live_broker_pipeline
+    step_result = run_realtime_simulation_step(cfg)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Erik Ernesto\Downloads\bitcoin_pi\tests\integration\test_live_broker_pipeline_smoke.py", line 127, in _raise
+    raise RuntimeError("upstream failure")
+RuntimeError: upstream failure

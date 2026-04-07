@@ -34,9 +34,17 @@ def evaluate_circuit_breaker(cfg: ConfigLike) -> CircuitBreakerDecision:
         is_open = payload.get("is_open", False)
 
     return CircuitBreakerDecision(enabled=True, fail_closed=fail_closed, is_open=is_open, state_path=state_path)
+#                error_code=incident.error_code,
+                #incident_bundle_path=incident.output_dir,
 
-
-def record_circuit_breaker_failure(cfg: ConfigLike, *, pipeline: str, exc: Exception) -> Path:
+def record_circuit_breaker_failure(
+    cfg: ConfigLike,
+    *,
+    pipeline: str,
+    exc: Exception,
+    error_code: str | None = None,
+    incident_bundle_path: str | None = None,
+) -> Path:
     state_path = _state_path(cfg)
     state_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -45,6 +53,8 @@ def record_circuit_breaker_failure(cfg: ConfigLike, *, pipeline: str, exc: Excep
         "pipeline": pipeline,
         "error_type": type(exc).__name__,
         "error_message": str(exc),
+        "error_code": error_code,
+        "incident_bundle_path": incident_bundle_path,
         "opened_at": pd.Timestamp.now("UTC").isoformat(),
     }
     state_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")

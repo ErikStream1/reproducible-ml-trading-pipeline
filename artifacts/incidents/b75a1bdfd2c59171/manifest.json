@@ -1,0 +1,19 @@
+{
+  "bundle_version": "v1",
+  "config_hash": "b94c047662f71df7c2fa8cc998d083227a87d0837a45a48354ffc1d388c95206",
+  "error_category": "runtime_pipeline_failure",
+  "error_code": "INC-LIVE-001",
+  "error_description": "Live broker pipeline failed and switched to fail-closed HOLD.",
+  "exception_message": "upstream failure",
+  "exception_type": "RuntimeError",
+  "files": [
+    "manifest.json",
+    "config_snapshot.json",
+    "context.json",
+    "traceback.txt",
+    "replay_instructions.md"
+  ],
+  "incident_id": "b75a1bdfd2c59171",
+  "opened_at": "2026-04-07T21:14:24.073865+00:00",
+  "pipeline": "live_broker"
+}
