@@ -18,6 +18,7 @@ Implemented pipelines:
 -   `run_paper_trading_pipeline`
 -   `run_backtest_pipeline`
 -   `run_shadow_live_divergence_monitor_pipeline`
+-   `run_signal_research_pipeline`
 
 ------------------------------------------------------------------------
 
@@ -379,3 +380,29 @@ Without changing the structure of other docs, these are the key consistency note
 
 - `DivergenceMonitorResult`
 - Optional JSON artifacts under `divergence_monitor.artifacts.output_dir`
+
+## 13) Signal research pipeline
+
+**Function**: `run_signal_research_pipeline(cfg)`
+
+**File**: `src/pipelines/signal_research_pipeline.py`
+
+### Flow
+
+1. Runs data + feature pipelines.
+2. Builds core research signals (`trend`, `mean_reversion`, `volatility_adjusted`, `ma_spread`).
+3. Composes a weighted `composite_signal`.
+4. Computes forward returns and evaluates directional accuracy + Spearman IC.
+5. Persists reproducible artifacts under `artifacts/alpha_research/`.
+
+### Key config inputs
+
+- `alpha_research.signals.*`
+- `alpha_research.forward_horizon`
+- `alpha_research.artifacts.*`
+
+### Outputs
+
+- `signal_report.json`
+- `signal_frame.csv`
+- Summary dictionary returned by the function

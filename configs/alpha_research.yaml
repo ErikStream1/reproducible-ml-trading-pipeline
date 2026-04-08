@@ -1,0 +1,18 @@
+alpha_research:
+  forward_horizon: 1
+  signals:
+    ma_fast_column: "MA_7"
+    ma_slow_column: "MA_30"
+    return_column: "LogReturn"
+    volatility_column: "Volatility_7"
+    trend_scale: 0.01
+    mean_reversion_scale: 0.01
+    volatility_floor: 0.000001
+    weights:
+      trend_signal: 0.35
+      mean_reversion_signal: 0.20
+      volatility_adjusted_signal: 0.25
+      ma_spread_signal: 0.20
+  artifacts:
+    signal_report_path: "artifacts/alpha_research/signal_report.json"
+    signal_frame_path: "artifacts/alpha_research/signal_frame.csv"

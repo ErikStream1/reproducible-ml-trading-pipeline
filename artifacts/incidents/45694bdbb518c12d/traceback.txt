@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "C:\Users\Erik Ernesto\Downloads\bitcoin_pi\src\pipelines\end_to_end_execution_pipeline.py", line 58, in run_end_to_end_execution_shadow_pipeline
+    step_result = run_realtime_simulation_step(cfg)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Erik Ernesto\Downloads\bitcoin_pi\tests\integration\test_end_to_end_execution_pipeline_smoke.py", line 123, in _raise
+    raise RuntimeError("inference crash")
+RuntimeError: inference crash

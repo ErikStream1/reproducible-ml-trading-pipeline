@@ -1,0 +1,19 @@
+{
+  "bundle_version": "v1",
+  "config_hash": "af50323492ff2e00b3efa645685226003e996ec03de5d1d469ea42d267e07d51",
+  "error_category": "runtime_pipeline_failure",
+  "error_code": "INC-PAPER-001",
+  "error_description": "Paper trading pipeline failed and switched to fail-closed HOLD.",
+  "exception_message": "quotes missing",
+  "exception_type": "ValueError",
+  "files": [
+    "manifest.json",
+    "config_snapshot.json",
+    "context.json",
+    "traceback.txt",
+    "replay_instructions.md"
+  ],
+  "incident_id": "56d6e8fd402d9e45",
+  "opened_at": "2026-04-08T16:43:04.881669+00:00",
+  "pipeline": "paper_trading"
+}

@@ -157,14 +157,25 @@ This is an **ongoing project**, actively being extended and refined. Planned and
  * [x] Runbook-style incident artifacts (structured error codes + deterministic replay bundle)
 
 ### Alpha Research & Signal Layer
-* [ ] Composite signal layer built on top of existing features
-* [ ] Core signal set (trend, mean reversion, volatility-adjusted, MA spread)
+* [x] Composite signal layer built on top of existing features
+* [in progress] Core signal set (trend, mean reversion, volatility-adjusted, MA spread)
 * [ ] Signal generation integrated into pipeline outputs and artifacts
 * [ ] Signal evaluation (forward returns, directional accuracy, IC)
 * [ ] Signal reporting (summary stats, distributions, NaNs, metadata)
 * [ ] Signal-driven experimentation (comparing signals vs baseline and model outputs)
 
 ---
+### Composite signal layer (alpha research)
+
+The alpha research layer now includes a reproducible composite signal workflow.
+
+* Core signals: trend, mean reversion, volatility-adjusted return, and MA spread
+* Composite score: weighted blend configurable via `configs/alpha_research.yaml`
+* Pipeline: `run_signal_research_pipeline(cfg)`
+* Artifacts: `artifacts/alpha_research/signal_report.json` and `signal_frame.csv`
+
+See `docs/alpha_research_signals.md` for usage and configuration.
+
 ### Real-time simulation step
 
 A new pipeline step can now simulate the latest trading decision from collected quote snapshots:
