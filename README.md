@@ -158,8 +158,8 @@ This is an **ongoing project**, actively being extended and refined. Planned and
 
 ### Alpha Research & Signal Layer
 * [x] Composite signal layer built on top of existing features
-* [in progress] Core signal set (trend, mean reversion, volatility-adjusted, MA spread)
-* [ ] Signal generation integrated into pipeline outputs and artifacts
+* [x] Core signal set (trend, mean reversion, volatility-adjusted, MA spread)
+* [in progress] Signal generation integrated into pipeline outputs and artifacts
 * [ ] Signal evaluation (forward returns, directional accuracy, IC)
 * [ ] Signal reporting (summary stats, distributions, NaNs, metadata)
 * [ ] Signal-driven experimentation (comparing signals vs baseline and model outputs)

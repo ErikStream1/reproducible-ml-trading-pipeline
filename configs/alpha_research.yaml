@@ -10,6 +10,7 @@ alpha_research:
     mean_reversion_scale: 0.01
     ma_spread_scale: 0.01
     volatility_floor: 0.000001
+    close_floor: 0.000000001
     weights:
       trend_signal: 0.35
       mean_reversion_signal: 0.20
