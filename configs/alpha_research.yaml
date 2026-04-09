@@ -5,8 +5,10 @@ alpha_research:
     ma_slow_column: "MA_30"
     return_column: "LogReturn"
     volatility_column: "Volatility_7"
+    close_column: "Close"
     trend_scale: 0.01
     mean_reversion_scale: 0.01
+    ma_spread_scale: 0.01
     volatility_floor: 0.000001
     weights:
       trend_signal: 0.35

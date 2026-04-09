@@ -32,3 +32,13 @@ def test_build_core_signals_adds_expected_columns() -> None:
     }
     assert expected.issubset(set(out.columns))
     assert out["composite_signal"].notna().all()
+    
+def test_build_core_signals_handles_zero_close_without_inf() -> None:
+    cfg = {"alpha_research": {"signals": {"close_column": "Close"}}}
+    frame = _feature_frame()
+    frame.loc[0, "Close"] = 0.0
+
+    out = build_core_signals(cfg, frame)
+
+    assert out["ma_spread_signal"].notna().all()
+    assert out["ma_spread_signal"].abs().max() <= 1.0
